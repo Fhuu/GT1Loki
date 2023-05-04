@@ -15,8 +15,8 @@ public class Loki {
 		 // Vorbereitung ohne Server
         // Startbrettkonfiguration erstellen
 		
-		Thread[] threads = new Thread[3];
-		for(int index = 0; index < threads.length; index++) {
+		Client[] clients = new Client[3];
+		for(int index = 0; index < clients.length; index++) {
 //			threads[index] = new Thread(new Runnable() {
 //				@Override
 //				public void run() {
@@ -29,8 +29,11 @@ public class Loki {
 //					}
 //				}
 //			});
-			threads[index] = new Thread(new Client("127.0.0.1", index));
-			threads[index].run();
+			System.out.println(index);
+			clients[index] = new Client("127.0.0.1", index);
+			clients[index].start();
+//			threads[index] = new Thread(new Client("127.0.0.1", index));
+//			threads[index].run();
 		}
 
         // in diesem Moment läuft das Spiel
@@ -39,7 +42,7 @@ public class Loki {
         // clients.getExpectedNetworkLatencyInMilliseconds();
         // clients.getTimeLimitInSeconds();
 
-        Move move;
+        // Move move;
 
         // while (true) {
             // while ((move = client.receiveMove()) != null) {
