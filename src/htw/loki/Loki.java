@@ -4,6 +4,7 @@ public class Loki {
 	
 	private static Boolean hasWinner = false;
 	private static GameBoard gameBoard = GameBoard.getInstance();
+	public static int playerCount = 3;
 
 	public static void hasWinner() {
 		Loki.hasWinner = true;

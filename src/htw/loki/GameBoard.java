@@ -15,8 +15,8 @@ package htw.loki;
 public class GameBoard {
 
 	private static GameBoard gameBoard = new GameBoard();
-	private int[][] neighbours = new int[36][3];
-	private int[][] playerPositions = new int[3][4];
+	private Integer[][] neighbours = new Integer[36][3];
+	private Integer[][] playerPositions = new Integer[3][4];
 	
 	// TODO
 	private GameBoard() {
@@ -46,22 +46,21 @@ public class GameBoard {
 	}
 
 	
-	public int[][] getPlayerPositions() {
-		return this.playerPositions;
+	public Integer[] getPlayerPositions(Integer playerNumber) {
+		return this.playerPositions[playerNumber];
 	}
 	
 	
 	// returns all the neighbouring positions of a position
-	public int[] getPossibleNextPositions(int index) {
+	public Integer[] getPossibleNextPositions(Integer index) {
 		return this.neighbours[index];
 	}
 	
 	
-	//TODO 
 	private void generateNeighbours() {
 		this.neighbours[0][0] = 2;
 		this.neighbours[0][1] = -1;
-		this.neighbours[0][1] = -1;
+		this.neighbours[0][2] = -1;
 		
 		this.neighbours[1][0] = 2;
 		this.neighbours[1][1] = 5;
