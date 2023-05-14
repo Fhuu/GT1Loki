@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Arrays;
 
 import javax.imageio.ImageIO;
@@ -45,21 +46,56 @@ public class Client extends Thread{
 	public void checkAllPossibleMoves() {
 		Integer[] positions = gameboard.getPlayerPositions(client.getMyPlayerNumber());
 		Arrays.sort(positions);
+		System.out.println(Arrays.toString(positions));
 		
 		ArrayList<Integer> allPossibleMoves = new ArrayList<>();
 		
 		for(int position : positions) {
 			Integer[] possibleMoves = gameboard.getPossibleNextPositions(position);
 			for(int possibleMove : possibleMoves) {
-				if( possibleMove > -1 && !allPossibleMoves.contains(possibleMove) && !(new ArrayList<Integer>(Arrays.asList(positions)).contains(possibleMove))) allPossibleMoves.add(possibleMove);
+				if( possibleMove > -1 && !allPossibleMoves.contains(possibleMove) && !(new ArrayList<Integer>(Arrays.asList(positions)).contains(possibleMove))) 
+					allPossibleMoves.add(possibleMove);
 
 			}
 				
 		}
 		
+		System.out.println(allPossibleMoves.toString());
+		
 		for(Integer possibleMove : allPossibleMoves) {
 			System.out.println(this.client.getMyPlayerNumber() + " can move to " + possibleMove);
 		}
+	}
+	
+	public Integer chooseStoneToMove(ArrayList<Integer> allPossibleMoves, Integer[] positions) {
+		Random ran = new Random();
+		
+		int indexPush = ran.nextInt(positions.length);
+		int to = allPossibleMoves.get(indexPush);
+		Integer[] neighbors = gameboard.getPossibleNextPositions(to);
+		int targetElement = -1;
+		
+	    if (this.client.getMyPlayerNumber() == 0) {
+	        targetElement = 0;
+	    } else if (this.client.getMyPlayerNumber() == 1) {
+	        targetElement = 25;
+	    } else if (this.client.getMyPlayerNumber() == 2) {
+	        targetElement = 35;
+	    }
+		
+	    for (int element : positions) {
+	        if (element == targetElement) {
+	            return element;
+	        }
+
+	        for (int neighbor : neighbors) {
+	            if (element != neighbor) {
+	                return element;
+	            }
+	        }
+	    }
+	    
+		return null;
 	}
 	
 	
