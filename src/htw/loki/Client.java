@@ -70,11 +70,15 @@ public class Client extends Thread{
 	public Integer chooseStoneToMove(ArrayList<Integer> allPossibleMoves, Integer[] positions) {
 		Random ran = new Random();
 		
+		// choose random target from allPossibleMoves
 		int indexPush = ran.nextInt(positions.length);
 		int to = allPossibleMoves.get(indexPush);
+		
+		// find the neighbors from the target
 		Integer[] neighbors = gameboard.getPossibleNextPositions(to);
 		int targetElement = -1;
 		
+		// set the first stones if available(0,25,35)
 	    if (this.client.getMyPlayerNumber() == 0) {
 	        targetElement = 0;
 	    } else if (this.client.getMyPlayerNumber() == 1) {
@@ -83,11 +87,13 @@ public class Client extends Thread{
 	        targetElement = 35;
 	    }
 		
+	    // 1st rule: choose 1st stone if available
 	    for (int element : positions) {
 	        if (element == targetElement) {
 	            return element;
 	        }
-
+	        
+	        // 2nd rule: check if the element is not the next neighbor from the target board
 	        for (int neighbor : neighbors) {
 	            if (element != neighbor) {
 	                return element;
@@ -96,6 +102,23 @@ public class Client extends Thread{
 	    }
 	    
 		return null;
+	}
+	
+	public boolean letNeighborAlone(Integer stone) {
+	    Integer[] neighbors = gameboard.getPossibleNextPositions(stone);
+	    Integer[] playerPositions = gameboard.getPlayerPositions(this.client.getMyPlayerNumber());
+
+	    // Check if the neighbor is alone if the stone moves
+	    for (Integer neighbor : neighbors) {
+	        Integer[] neighbors2 = gameboard.getPossibleNextPositions(neighbor);
+	        for (Integer playerPos : playerPositions) {
+	            if (neighbor.equals(playerPos)) {
+	                return true;
+	            }
+	        }
+	    }
+
+	    return false;
 	}
 	
 	
