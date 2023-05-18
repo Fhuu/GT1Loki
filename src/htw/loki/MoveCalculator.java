@@ -6,12 +6,12 @@ public class MoveCalculator {
 	private GameBoard gameboard;
 	private final int LARGEST_NUMBER = 10000;
 	private final int SMALLEST_NUMBER = -10000;
-	private int recursionNumber;
+	private int calculationDepth;
 	
 	public MoveCalculator(AIAlgorithm algorithm) {
 		this.algorithm = algorithm;
 		this.gameboard = GameBoard.getInstance();
-		this.recursionNumber = 2;
+		this.calculationDepth = 2;
 	}
 	
 	public int calculate() {
@@ -20,9 +20,13 @@ public class MoveCalculator {
 	}
 	
 	
+	public void setCalculationDepth(int newDepth) {
+		this.calculationDepth = newDepth;
+	}
+	
 	// TODO: fix for when only 2 players are playing
 	public int minimax(boolean isMaximizing, int depth, int minCount) {
-		if(this.recursionNumber == depth) return 1;
+		if(this.calculationDepth == depth) return 1;
 		if(isMaximizing) {
 			//TODO: calculate maximizing turn
 			int result = Math.max(this.SMALLEST_NUMBER, minimax(true, depth, 1));

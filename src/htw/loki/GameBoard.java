@@ -21,20 +21,7 @@ public class GameBoard {
 	// TODO
 	private GameBoard() {
 		// Initial player positions
-		this.playerPositions[0][0] = 0;
-		this.playerPositions[0][1] = 1;
-		this.playerPositions[0][2] = 2;
-		this.playerPositions[0][3] = 3;
 		
-		this.playerPositions[1][0] = 25;
-		this.playerPositions[1][1] = 27;
-		this.playerPositions[1][2] = 26;
-		this.playerPositions[1][3] = 16;
-		
-		this.playerPositions[2][0] = 35;
-		this.playerPositions[2][1] = 34;
-		this.playerPositions[2][2] = 24;
-		this.playerPositions[2][3] = 33;
 		
 		this.generateNeighbours();
 	}
@@ -48,6 +35,11 @@ public class GameBoard {
 	
 	public Integer[] getPlayerPositions(Integer playerNumber) {
 		return this.playerPositions[playerNumber];
+	}
+	
+	
+	public void changeStonePosition(Integer player, Integer stoneNumber, Integer newPosition) {
+		this.playerPositions[player][stoneNumber] = newPosition;
 	}
 	
 	
