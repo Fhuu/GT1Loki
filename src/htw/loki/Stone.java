@@ -1,5 +1,8 @@
 package htw.loki;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Stone {
 	
 	private Integer position;
@@ -20,10 +23,34 @@ public class Stone {
 	}
 	
 	
-	public Integer getNeighbour() {
-		return 1;
+	public Integer[] getNeighbours() {
+		return new Integer[] {};
 	}
 	
+	
+	public Integer[] getAllPossibleMoves(GameBoard gameboard, Stone[] stones) {
+		Integer[] positions = new Integer[4];
+		for(int index = 0; index < positions.length; index++) {
+			positions[index] = stones[index].getPosition();
+		}
+		Arrays.sort(positions);
+		
+		ArrayList<Integer> allPossibleMoves = new ArrayList<>();
+		for(int position : positions) {
+			if(position == this.position) continue;
+			Integer[] possibleMoves = gameboard.getPossibleNextPositions(position);
+			for(int possibleMove : possibleMoves) {
+				if( possibleMove > -1 && !allPossibleMoves.contains(possibleMove) && !(new ArrayList<Integer>(Arrays.asList(positions)).contains(possibleMove))) allPossibleMoves.add(possibleMove);
+			}
+		}
+		
+		return allPossibleMoves.toArray(new Integer[allPossibleMoves.size()]);
+	}
+	
+	
+	public boolean hasNeighbour(GameBoard gameboard, Stone[] stones) {
+		return true;
+	}
 	
 	public static Integer[] createInitialStonePosition(int playerNumber) {
 		switch(playerNumber) {
