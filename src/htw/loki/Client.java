@@ -44,100 +44,33 @@ public class Client extends Thread {
 			for (int index = 0; index < STONEPOSITIONS.length; index++) {
 				this.stones[index] = new Stone(STONEPOSITIONS[index]);
 			}
-			this.move();
+
+		      // Call getAllPossibleMoves and convert the result to a string
+			for(Stone stone:stones) {
+		        Integer[] allPossibleMoves = stone.getAllPossibleMoves(gameboard, stones);
+		        StringBuilder movesString = new StringBuilder();
+		        for (int i = 0; i < allPossibleMoves.length; i++) {
+		            movesString.append(allPossibleMoves[i]);
+		            if (i < allPossibleMoves.length - 1) {
+		                movesString.append(", ");
+		            }
+		        }
+		        System.out.println("All Possible Moves: " + stone.getPosition()+ " can go to " +movesString);
+			}
+
+	        
+				
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
-	public ArrayList<Integer> getAllPossibleMoves() {
-		Integer[] positions = new Integer[4];
-		for (int index = 0; index < positions.length; index++) {
-			positions[index] = this.stones[index].getPosition();
-		}
-		Arrays.sort(positions);
 
-		ArrayList<Integer> allPossibleMoves = new ArrayList<>();
-		for (int position : positions) {
-			Integer[] possibleMoves = gameboard.getPossibleNextPositions(position);
-			for (int possibleMove : possibleMoves) {
-				if (possibleMove > -1 && !allPossibleMoves.contains(possibleMove)
-						&& !(new ArrayList<Integer>(Arrays.asList(positions)).contains(possibleMove)))
-					allPossibleMoves.add(possibleMove);
-			}
-		}
 
-		return allPossibleMoves;
-	}
 
-	public Integer chooseStoneToMove(ArrayList<Integer> allPossibleMoves, Integer[] positions) {
-		Random ran = new Random();
 
-		// choose random target from allPossibleMoves
-		int indexPush = ran.nextInt(positions.length);
-		int to = allPossibleMoves.get(indexPush);
-
-		// find the neighbors from the target
-		Integer[] neighbors = gameboard.getPossibleNextPositions(to);
-		int targetElement = -1;
-
-		// set the first stones if available(0,25,35)
-		if (this.client.getMyPlayerNumber() == 0) {
-			targetElement = 0;
-		} else if (this.client.getMyPlayerNumber() == 1) {
-			targetElement = 25;
-		} else if (this.client.getMyPlayerNumber() == 2) {
-			targetElement = 35;
-		}
-
-		// 1st rule: choose 1st stone if available
-		for (int element : positions) {
-			if (element == targetElement) {
-				return element;
-			}
-
-			// 2nd rule: check if the element is not the next neighbor from the target board
-			for (int neighbor : neighbors) {
-				if (element != neighbor) {
-					return element;
-				}
-			}
-		}
-
-		return null;
-	}
-
-	public boolean letNeighborAlone(Integer stone) {
-		Integer[] neighbors = gameboard.getPossibleNextPositions(stone);
-		Integer[] playerPositions = gameboard.getPlayerPositions(this.client.getMyPlayerNumber());
-
-		// Check if the neighbor is alone if the stone moves
-		for (Integer neighbor : neighbors) {
-			Integer[] neighbors2 = gameboard.getPossibleNextPositions(neighbor);
-			for (Integer playerPos : playerPositions) {
-				if (neighbor.equals(playerPos)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	public void move() {
-		ArrayList<Integer> allPossibleMoves = this.getAllPossibleMoves();
-		// Integer[] stonePositions =
-		// gameboard.getPlayerPositions(this.client.getMyPlayerNumber());
-		// Integer movedStone = (new Random()).nextInt(stonePositions.length);
-		// this.client.sendMove(new Move(stonePositions[movedStone],
-		// allPossibleMoves.get((new Random()).nextInt(allPossibleMoves.size())), 0));
-
-		// TODO:
-		// - check whether the stone moving is allowed to move
-		// - refresh gameboard
-		// gameboard.
-	}
 	// TODO: Movedamn
 
 }

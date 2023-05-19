@@ -6,9 +6,29 @@ import java.util.Arrays;
 public class Stone {
 	
 	private Integer position;
+	private Integer from;
+	private Integer to;
+	private GameBoard gameboard;
 	
 	public Stone(int stonePosition) {
 		this.setPosition(stonePosition);
+		this.gameboard = GameBoard.getInstance();
+	}
+	
+	public Integer getFrom() {
+		return from;
+	}
+	
+	public Integer getTo() {
+		return to;
+	}
+	
+	public void setFrom(Integer from) {
+		this.from = from;
+	}
+	
+	public void setTo(Integer to) {
+		this.to = to;
 	}
 	
 	
@@ -23,9 +43,21 @@ public class Stone {
 	}
 	
 	
-	public Integer[] getNeighbours() {
-		return new Integer[] {};
+	public Integer[] getNeighbours(Integer position) {
+		return gameboard.getPossibleNextPositions(position);
 	}
+	
+	public void moveStone(Integer to) {
+		setFrom(this.position);
+		setTo(to);
+		setPosition(to);
+	}
+	
+	public void undoMoveStone() {
+		setPosition(getFrom());
+	}
+	
+
 	
 	
 	public Integer[] getAllPossibleMoves(GameBoard gameboard, Stone[] stones) {
