@@ -34,7 +34,7 @@ public class MoveCalculator {
 		}
 		
 		// Calculate the minimizing turn
-		for(int position : gameboard.getPossibleNextPositions(minCount))
+		for(int position : gameboard.getNeighbouringPosition(minCount))
 		
 		// Call next recursion
 		if(minCount == Loki.playerCount) {

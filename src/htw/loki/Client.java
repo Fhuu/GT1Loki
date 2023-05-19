@@ -31,45 +31,37 @@ public class Client extends Thread{
 		this.stones = new Stone[4];
 	}
 
+	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		System.out.println("Client " + this.clientNumber + " connecting to " + this.hostname + " with image from .\\image\\image" + (this.clientNumber + 1) + ".png");
-		try {
-			this.client = new NetworkClient(this.hostname, "player" + clientNumber, ImageIO.read(new File(".\\image\\image" + (this.clientNumber + 1) + ".png")));
-			final Integer[] STONEPOSITIONS = Stone.createInitialStonePosition(this.client.getMyPlayerNumber());
+//		try {
+//			this.client = new NetworkClient(this.hostname, "player" + clientNumber, ImageIO.read(new File(".\\image\\image" + (this.clientNumber + 1) + ".png")));
+			final Integer PLAYERNUMBER = 0;
+			final Integer[] STONEPOSITIONS = Stone.createInitialStonePosition(PLAYERNUMBER);
 			for(int index = 0; index < STONEPOSITIONS.length; index++) {
-				this.stones[index] = new Stone(STONEPOSITIONS[index]);
+				this.stones[index] = new Stone(STONEPOSITIONS[index], PLAYERNUMBER);
 			}
 			this.move();
-		} catch (IOException e) {
+//		} catch (IOException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	
-	public ArrayList<Integer> getAllPossibleMoves() {
-		Integer[] positions = new Integer[4];
-		for(int index = 0; index < positions.length; index++) {
-			positions[index] = this.stones[index].getPosition();
-		}
-		Arrays.sort(positions);		
-		
-		ArrayList<Integer> allPossibleMoves = new ArrayList<>();
-		for(int position : positions) {
-			Integer[] possibleMoves = gameboard.getPossibleNextPositions(position);
-			for(int possibleMove : possibleMoves) {
-				if( possibleMove > -1 && !allPossibleMoves.contains(possibleMove) && !(new ArrayList<Integer>(Arrays.asList(positions)).contains(possibleMove))) allPossibleMoves.add(possibleMove);
-			}
-		}
-		
-		return allPossibleMoves;
+//			e.printStackTrace();
+//		}
 	}
 	
 	
 	public void move() {
-		ArrayList<Integer> allPossibleMoves = this.getAllPossibleMoves();
+		for(Stone stone : stones) {
+			final Integer[] possibleMoves = stone.getAllPossibleMoves(this.gameboard, this.stones);
+			for(int possibleMove : possibleMoves) {
+				if(stone.hasNeighbour(this.gameboard, this.stones)) System.out.println("Client " + 1 + " stone " + stone.getPosition() + " : " + possibleMove);	
+			}
+//			stone.move(possibleMoves[(new Random()).nextInt(0, possibleMoves.length)]);
+			
+//			if(move is accepted)
+//			this.client.sendMove(new Move(to, from, push));
+		}
 //		Integer[] stonePositions = gameboard.getPlayerPositions(this.client.getMyPlayerNumber());
 //		Integer movedStone = (new Random()).nextInt(stonePositions.length);
 //		this.client.sendMove(new Move(stonePositions[movedStone], allPossibleMoves.get((new Random()).nextInt(allPossibleMoves.size())), 0));
