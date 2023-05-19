@@ -30,7 +30,7 @@ public class Stone {
 	}
 	
 	
-	public Integer[] getAllPossibleMoves(GameBoard gameboard, Stone[] stones) {
+	public Integer[] getValidMoves(GameBoard gameboard, Stone[] stones) {
 		Integer[] positions = new Integer[4];
 		for(int index = 0; index < positions.length; index++) {
 			positions[index] = stones[index].getPosition();

@@ -54,7 +54,7 @@ public class Client extends Thread{
 	public void move() {
 		long time = System.currentTimeMillis();
 		for(Stone stone : stones) {
-			final Integer[] possibleMoves = stone.getAllPossibleMoves(this.gameboard, this.stones);
+			final Integer[] possibleMoves = stone.getValidMoves(this.gameboard, this.stones);
 //			stone.move(possibleMoves[(new Random()).nextInt(0, possibleMoves.length)]);
 			
 //			if(move is accepted)
