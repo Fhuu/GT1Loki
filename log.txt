@@ -1,0 +1,71 @@
+Client 0 stone 0 : 5
+Client 0 stone 0 : 7
+valid moves for stone with position 0, player number 0 is 5
+valid moves for stone with position 0, player number 0 is 7
+
+Client 0 stone 1 : 7
+valid moves for stone with position 1, player number 0 is 7
+
+Client 0 stone 2 : 5
+Client 0 stone 2 : 7
+
+Client 0 stone 3 : 5
+valid moves for stone with position 3, player number 0 is 5
+
+Client 1 stone 16 : 28
+valid moves for stone with position 16, player number 1 is 28
+
+Client 1 stone 25 : 17
+Client 1 stone 25 : 28
+valid moves for stone with position 25, player number 1 is 17
+valid moves for stone with position 25, player number 1 is 28
+
+Client 1 stone 26 : 17
+Client 1 stone 26 : 28
+
+Client 1 stone 27 : 17
+valid moves for stone with position 27, player number 1 is 17
+
+Client 2 stone 24 : 32
+valid moves for stone with position 24, player number 2 is 32
+
+Client 2 stone 33 : 23
+valid moves for stone with position 33, player number 2 is 23
+
+Client 2 stone 34 : 23
+Client 2 stone 34 : 32
+
+Client 2 stone 35 : 23
+Client 2 stone 35 : 32
+valid moves for stone with position 35, player number 2 is 23
+valid moves for stone with position 35, player number 2 is 32
+
+
+valid moves for stone with position 1, player number 0 is 2
+valid moves for stone with position 1, player number 0 is 4
+valid moves for stone with position 1, player number 0 is 6
+valid moves for stone with position 1, player number 0 is 8
+Client 0 stone 1 : 2
+Client 0 stone 1 : 4
+Client 0 stone 1 : 6
+Client 0 stone 1 : 8
+valid moves for stone with position 5, player number 0 is 2
+valid moves for stone with position 5, player number 0 is 6
+valid moves for stone with position 5, player number 0 is 8
+Client 0 stone 5 : 2
+Client 0 stone 5 : 6
+Client 0 stone 5 : 8
+valid moves for stone with position 3, player number 0 is 2
+valid moves for stone with position 3, player number 0 is 4
+valid moves for stone with position 3, player number 0 is 6
+valid moves for stone with position 3, player number 0 is 8
+Client 0 stone 3 : 2
+Client 0 stone 3 : 4
+Client 0 stone 3 : 6
+Client 0 stone 3 : 8
+valid moves for stone with position 7, player number 0 is 2
+valid moves for stone with position 7, player number 0 is 4
+valid moves for stone with position 7, player number 0 is 6
+Client 0 stone 7 : 2
+Client 0 stone 7 : 4
+Client 0 stone 7 : 6
