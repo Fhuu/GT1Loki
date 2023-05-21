@@ -7,10 +7,28 @@ public class Stone {
 
 	private Integer position;
 	private Integer playerNumber;
+	private Integer from;
+	private Integer to;
 
 	public Stone(int stonePosition, int playerNumber) {
 		this.setPosition(stonePosition);
 		this.playerNumber = playerNumber;
+	}
+	
+	public Integer getFrom() {
+		return from;
+	}
+
+	public Integer getTo() {
+		return to;
+	}
+
+	public void setFrom(Integer from) {
+		this.from = from;
+	}
+
+	public void setTo(Integer to) {
+		this.to = to;
 	}
 
 	public Integer getPosition() {
@@ -21,9 +39,6 @@ public class Stone {
 		this.position = position;
 	}
 
-	public Integer[] getNeighbours(Integer position) {
-		return gameboard.getPossibleNextPositions(position);
-	}
 
 	public void moveStone(Integer to) {
 		setFrom(this.position);
