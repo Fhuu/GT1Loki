@@ -40,37 +40,53 @@ public class Client extends Thread {
 		try {
 			this.client = new NetworkClient(this.hostname, "player" + clientNumber,
 					ImageIO.read(new File(".\\image\\image" + (this.clientNumber + 1) + ".png")));
-			final Integer[] STONEPOSITIONS = Stone.createInitialStonePosition(this.client.getMyPlayerNumber());
+			final Integer PLAYERNUMBER = this.client.getMyPlayerNumber();
+			final Integer[] STONEPOSITIONS = Stone.createInitialStonePosition(PLAYERNUMBER);
 			for (int index = 0; index < STONEPOSITIONS.length; index++) {
-				this.stones[index] = new Stone(STONEPOSITIONS[index]);
+				this.stones[index] = new Stone(STONEPOSITIONS[index], PLAYERNUMBER);
 			}
 
-		      // Call getAllPossibleMoves and convert the result to a string
-			for(Stone stone:stones) {
-		        Integer[] allPossibleMoves = stone.getAllPossibleMoves(gameboard, stones);
-		        StringBuilder movesString = new StringBuilder();
-		        for (int i = 0; i < allPossibleMoves.length; i++) {
-		            movesString.append(allPossibleMoves[i]);
-		            if (i < allPossibleMoves.length - 1) {
-		                movesString.append(", ");
-		            }
-		        }
-		        System.out.println("All Possible Moves: " + stone.getPosition()+ " can go to " +movesString);
-			}
+			// Call getAllPossibleMoves and convert the result to a string
+//			for (Stone stone : stones) {
+//				Integer[] allPossibleMoves = stone.getAllPossibleMoves(gameboard, stones);
+//				StringBuilder movesString = new StringBuilder();
+//				for (int i = 0; i < allPossibleMoves.length; i++) {
+//					movesString.append(allPossibleMoves[i]);
+//					if (i < allPossibleMoves.length - 1) {
+//						movesString.append(", ");
+//					}
+//				}
+//				System.out.println("All Possible Moves: " + stone.getPosition() + " can go to " + movesString);
+//			}
 
-	        
-				
-			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 
+	public void move() {
+		long time = System.currentTimeMillis();
+		for (Stone stone : stones) {
+			final Integer[] possibleMoves = stone.getValidMoves(this.gameboard, this.stones);
+			// stone.move(possibleMoves[(new Random()).nextInt(0, possibleMoves.length)]);
 
+			// if(move is accepted)
+			// this.client.sendMove(new Move(to, from, push));
+		}
+		System.out.println("Player " + this.client.getMyPlayerNumber() + " took " + (System.currentTimeMillis() - time)
+				+ " ms to finish processing valid moves");
+		// Integer[] stonePositions =
+		// gameboard.getPlayerPositions(this.client.getMyPlayerNumber());
+		// Integer movedStone = (new Random()).nextInt(stonePositions.length);
+		// this.client.sendMove(new Move(stonePositions[movedStone],
+		// allPossibleMoves.get((new Random()).nextInt(allPossibleMoves.size())), 0));
 
-
-
+		// TODO:
+		// - check whether the stone moving is allowed to move
+		// - refresh gameboard
+		// gameboard.
+	}
 	// TODO: Movedamn
 
 }
