@@ -2,6 +2,7 @@ package htw.loki;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Stone {
 
@@ -112,13 +113,25 @@ public class Stone {
 
 		return true;
 	}
+	
+	public static Stone[] updateStonePosition(Stone[] stones, Integer from, Integer To) {
+		for(Stone stone : stones) {
+			if(stone.position == from) {
+				stone.setPosition(To);
+				break;
+			}
+		}
+		System.out.println("new array position: " + Arrays.toString(stones));
+		return stones;
+		
+	}
 
 	public static Integer[] createInitialStonePosition(int playerNumber) {
 		switch (playerNumber) {
 			case 0:
 				return new Integer[] { 0, 1, 2, 3 };
 			case 1:
-				return new Integer[] { 17, 9, 28, 29 };
+				return new Integer[] { 16, 25, 26, 27 };
 			case 2:
 				return new Integer[] { 24, 33, 34, 35 };
 			default:

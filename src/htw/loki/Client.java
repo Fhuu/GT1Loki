@@ -45,6 +45,17 @@ public class Client extends Thread {
 			for (int index = 0; index < STONEPOSITIONS.length; index++) {
 				this.stones[index] = new Stone(STONEPOSITIONS[index], PLAYERNUMBER);
 			}
+			
+			move();
+			
+	        while (true) {
+	            while ((client.receiveMove()) != null) {
+	                // verarbeite Zug
+	                // Brettkonfiguration aktualisieren
+	            }
+	            // berechne genialen eigenen Zug
+	            move();
+	        }
 
 			// Call getAllPossibleMoves and convert the result to a string
 //			for (Stone stone : stones) {
@@ -69,10 +80,16 @@ public class Client extends Thread {
 		long time = System.currentTimeMillis();
 		for (Stone stone : stones) {
 			final Integer[] possibleMoves = stone.getValidMoves(this.gameboard, this.stones);
-			// stone.move(possibleMoves[(new Random()).nextInt(0, possibleMoves.length)]);
+			if(possibleMoves.length == 0) continue;
+			
+			
+			// stone.moveStone(possibleMoves[(new Random()).nextInt(possibleMoves.length)]);
 
 			// if(move is accepted)
-			// this.client.sendMove(new Move(to, from, push));
+			System.out.println("stone " + stone.getPosition() + " from player: "+ this.clientNumber +" move to " + possibleMoves[(new Random()).nextInt(possibleMoves.length)]);
+			this.client.sendMove(new Move(stone.getPosition(),possibleMoves[(new Random()).nextInt(possibleMoves.length)], 0 ));
+			this.stones = Stone.updateStonePosition(stones, stone.getPosition(), possibleMoves[(new Random()).nextInt(possibleMoves.length)]);
+			break;
 		}
 		System.out.println("Player " + this.client.getMyPlayerNumber() + " took " + (System.currentTimeMillis() - time)
 				+ " ms to finish processing valid moves");
