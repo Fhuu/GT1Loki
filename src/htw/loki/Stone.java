@@ -6,11 +6,9 @@ import java.util.Arrays;
 public class Stone {
 	
 	private Integer position;
-	private Integer playerNumber;
 	
-	public Stone(int stonePosition, int playerNumber) {
+	public Stone(int stonePosition) {
 		this.setPosition(stonePosition);
-		this.playerNumber = playerNumber;
 	}
 	
 	
@@ -30,7 +28,10 @@ public class Stone {
 	}
 	
 	
-	public Integer[] getValidMoves(GameBoard gameboard, Stone[] stones) {
+	public Integer[] getValidMoves(int clientNumber) {
+		GameBoard gameboard = GameBoard.getInstance();
+		final Stone[] stones = gameboard.getStones(clientNumber);
+		
 		Integer[] positions = new Integer[4];
 		for(int index = 0; index < positions.length; index++) {
 			positions[index] = stones[index].getPosition();
@@ -53,11 +54,6 @@ public class Stone {
 			if(this.isValidMove(move, gameboard, stones)) validMoves.add(move);
 		}
 				
-		for(Integer validMove : validMoves) {
-			System.out.println("valid moves for stone with position "
-					+ this.position + ", player number "  + this.playerNumber + " is " + validMove);			
-		}
-		
 		return validMoves.toArray(new Integer[validMoves.size()]);
 	}
 	
