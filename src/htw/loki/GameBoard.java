@@ -98,8 +98,6 @@ public class GameBoard {
 	}
 	
 	
-	
-	
 	// returns all the neighbouring positions of a position
 	public Integer[] getNeighbouringPosition(Integer index) {
 		return this.neighbours[index];
