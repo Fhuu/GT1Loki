@@ -1,5 +1,8 @@
 package htw.loki;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * DOKU:
  * Considered ArrayList for the linked neighbouring position because some position has only 1 or 2 neighbours
@@ -16,6 +19,7 @@ public class GameBoard {
 
 	private static GameBoard gameBoard;
 	private Integer[][] neighbours = new Integer[36][3];
+	private Stone[][] stones;
 	
 	// TODO
 	private GameBoard() {
@@ -23,12 +27,31 @@ public class GameBoard {
 		
 		
 		this.generateBoard();
-	}
+		stones[0][0] = new Stone(0);
+		stones[0][1] = new Stone(1);
+		stones[0][2] = new Stone(2);
+		stones[0][3] = new Stone(3);
+
+		stones[1][0] = new Stone(16);
+		stones[1][1] = new Stone(25);
+		stones[1][2] = new Stone(26);
+		stones[1][3] = new Stone(27);
+
+		stones[2][0] = new Stone(24);
+		stones[2][1] = new Stone(33);
+		stones[2][2] = new Stone(34);
+		stones[2][3] = new Stone(35);
+}
 	
 	
 	public static GameBoard getInstance() {
 		if(gameBoard == null) gameBoard = new GameBoard();
 		return gameBoard;
+	}
+	
+	
+	public Stone[] getStones(int playerNumber) {
+		return this.stones[playerNumber];
 	}
 	
 	
@@ -183,4 +206,17 @@ public class GameBoard {
 		this.neighbours[35][1] = -1;
 		this.neighbours[35][2] = -1;
 	}
+	
+	
+	public boolean hasPlayerWon(int playerNumber) {
+        Stone[] stones = this.stones[playerNumber];
+        
+        ArrayList<Integer> winningPosition = new ArrayList<Integer>(Arrays.asList(playerNumber == 0 ? new Integer[] {25,26,27,28,29,30,31,32,33,34,35} : playerNumber == 1 ? new Integer[] {0,2,3,7,8,14,15,23,24,34,35} : new Integer[] {0,2,1,5,4,10,9,17,16,26,25}));
+        
+        for(Stone stone : stones) {
+            if(!winningPosition.contains(stone.getPosition())) return false;
+        }
+        
+        return true;
+    }
 }
