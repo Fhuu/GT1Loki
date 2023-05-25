@@ -4,42 +4,55 @@ public class MoveCalculator {
 	
 	private AIAlgorithm algorithm;
 	private GameBoard gameboard;
-	private final int LARGEST_NUMBER = 10000;
-	private final int SMALLEST_NUMBER = -10000;
-	private int calculationDepth;
+	private final int LARGEST_NUMBER = Integer.MAX_VALUE;
+	private final int SMALLEST_NUMBER = Integer.MIN_VALUE;
+	private int playerNumber;
 	
-	public MoveCalculator(AIAlgorithm algorithm) {
+	public MoveCalculator(AIAlgorithm algorithm, int playerNumber) {
 		this.algorithm = algorithm;
 		this.gameboard = GameBoard.getInstance();
-		this.calculationDepth = 2;
+		this.playerNumber = playerNumber;
 	}
 	
-	public int calculate() {
-		if(this.algorithm.equals(AIAlgorithm.MINIMAX)) return minimax(true, 2, 1);
+	
+	public int calculate(int depth) {
+		if(this.algorithm.equals(AIAlgorithm.MINIMAX)) return minimax(this.playerNumber, depth);
 		return -1;
 	}
 	
 	
-	public void setCalculationDepth(int newDepth) {
-		this.calculationDepth = newDepth;
+	// TODO: fix for when only 2 players are playing
+	public int minimax(int playerNumber, int depth) {
+		final int nextPlayer = playerNumber >= 2 ? 0 : playerNumber + 1;
+		if(depth == 0) return 1;
+		
+		
+		
+		int result;
+		if(playerNumber == this.playerNumber) {
+			//TODO: calculate maximizing turn
+			result = Math.max(Integer.MIN_VALUE, minimax(nextPlayer, depth - 1));
+			
+			// Here should undo move
+			
+			return result;
+		}
+		
+		result = Math.min(Integer.MAX_VALUE, minimax(nextPlayer, depth));
+		
+		// Here should undo move
+		
+		return result;
+		
 	}
 	
-	// TODO: fix for when only 2 players are playing
-	public int minimax(boolean isMaximizing, int depth, int minCount) {
-		if(this.calculationDepth == depth) return 1;
-		if(isMaximizing) {
-			//TODO: calculate maximizing turn
-			int result = Math.max(this.SMALLEST_NUMBER, minimax(true, depth, 1));
-			return 1;
+	public boolean hasGameStopped() {
+		GameBoard gameboard = GameBoard.getInstance();
+		Stone[] stones = gameboard.getStones(this.playerNumber);
+		if(stones[0].getPosition() == 0 && stones[1].getPosition() == 0 && stones[2].getPosition() == 0 && stones[3].getPosition() == 0) {
+			
 		}
 		
-		// Calculate the minimizing turn
-		for(int position : gameboard.getNeighbouringPosition(minCount))
-		
-		// Call next recursion
-		if(minCount == Loki.playerCount) {
-			return Math.min(this.LARGEST_NUMBER, minimax(true, depth, 0));
-		}
-		return Math.min(this.LARGEST_NUMBER, minimax(false, depth, 2));
+		return false;
 	}
 }
