@@ -1,5 +1,7 @@
 package htw.loki;
 
+import java.util.ArrayList;
+
 /**
  * DOKU:
  * Considered ArrayList for the linked neighbouring position because some position has only 1 or 2 neighbours
@@ -16,20 +18,86 @@ public class GameBoard {
 
 	private static GameBoard gameBoard;
 	private Integer[][] neighbours = new Integer[36][3];
+	private Integer[] player0stones = new Integer[4];
+	private Integer[] player1stones = new Integer[4];
+	private Integer[] player2stones = new Integer[4];
 	
 	// TODO
 	private GameBoard() {
 		// Initial player positions
 		
-		
 		this.generateBoard();
+		this.createInitialStonePosition();
 	}
 	
+	public Integer[] getPlayer0stones() {
+		return this.player0stones;
+	}
+	
+	public Integer[] getPlayer1stones() {
+		return this.player1stones;
+	}
+	
+	public Integer[] getPlayer2stones() {
+		return this.player2stones;
+	}
+	
+	public void setPlayer0stones(Integer[] stones) {
+		this.player0stones = stones;
+	}
+	
+	public void setPlayer1stones(Integer[] stones) {
+		this.player1stones = stones;
+	}
+	
+	public void setPlayer2stones(Integer[] stones) {
+		this.player2stones = stones;
+	}
+	
+	public void updateBoard(Integer player, Integer from, Integer to) {
+		ArrayList<Integer> newPositions = new ArrayList<Integer>(); 
+		if(player == 0){
+			Integer[] playerPosition = getPlayer0stones();
+			for(Integer pos : playerPosition) {
+				if(from == pos) continue;
+				newPositions.add(pos);
+				newPositions.add(to);
+			}
+			this.setPlayer0stones(playerPosition);
+		}
+		if(player == 1){
+			Integer[] playerPosition = getPlayer1stones();
+			for(Integer pos : playerPosition) {
+				if(from == pos) continue;
+				newPositions.add(pos);
+				newPositions.add(to);
+			}
+			this.setPlayer1stones(playerPosition);
+		}
+		if(player == 2){
+			Integer[] playerPosition = getPlayer2stones();
+			for(Integer pos : playerPosition) {
+				if(from == pos) continue;
+				newPositions.add(pos);
+				newPositions.add(to);
+			}
+			this.setPlayer2stones(playerPosition);
+		}
+		
+	}
+	
+	public void createInitialStonePosition() {
+		setPlayer0stones(new Integer[] { 0, 1, 2, 3 });
+		setPlayer1stones(new Integer[] { 16, 25, 26, 27 });
+		setPlayer2stones(new Integer[] { 24, 33, 34, 35 });
+	}
 	
 	public static GameBoard getInstance() {
 		if(gameBoard == null) gameBoard = new GameBoard();
 		return gameBoard;
 	}
+	
+	
 	
 	
 	// returns all the neighbouring positions of a position
@@ -183,4 +251,6 @@ public class GameBoard {
 		this.neighbours[35][1] = -1;
 		this.neighbours[35][2] = -1;
 	}
+	
+
 }

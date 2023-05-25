@@ -130,16 +130,4 @@ public class Stone {
 		
 	}
 
-	public static Integer[] createInitialStonePosition(int playerNumber) {
-		switch (playerNumber) {
-			case 0:
-				return new Integer[] { 0, 1, 2, 3 };
-			case 1:
-				return new Integer[] { 16, 25, 26, 27 };
-			case 2:
-				return new Integer[] { 24, 33, 34, 35 };
-			default:
-				return null;
-		}
-	}
 }
