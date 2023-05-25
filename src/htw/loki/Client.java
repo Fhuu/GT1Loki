@@ -50,25 +50,11 @@ public class Client extends Thread {
 			
 	        while (true) {
 	            while ((client.receiveMove()) != null) {
-	                // verarbeite Zug
-	                // Brettkonfiguration aktualisieren
+	            	// update stone & gameboard
 	            }
 	            // berechne genialen eigenen Zug
 	            move();
 	        }
-
-			// Call getAllPossibleMoves and convert the result to a string
-//			for (Stone stone : stones) {
-//				Integer[] allPossibleMoves = stone.getAllPossibleMoves(gameboard, stones);
-//				StringBuilder movesString = new StringBuilder();
-//				for (int i = 0; i < allPossibleMoves.length; i++) {
-//					movesString.append(allPossibleMoves[i]);
-//					if (i < allPossibleMoves.length - 1) {
-//						movesString.append(", ");
-//					}
-//				}
-//				System.out.println("All Possible Moves: " + stone.getPosition() + " can go to " + movesString);
-//			}
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -78,32 +64,28 @@ public class Client extends Thread {
 
 	public void move() {
 		long time = System.currentTimeMillis();
+		ArrayList<Integer> positions = new ArrayList<Integer>();
+		Stone movedStone = null;
 		for (Stone stone : stones) {
 			final Integer[] possibleMoves = stone.getValidMoves(this.gameboard, this.stones);
 			if(possibleMoves.length == 0) continue;
-			
-			
-			// stone.moveStone(possibleMoves[(new Random()).nextInt(possibleMoves.length)]);
+			positions.add(stone.getPosition());
 
-			// if(move is accepted)
-			System.out.println("stone " + stone.getPosition() + " from player: "+ this.clientNumber +" move to " + possibleMoves[(new Random()).nextInt(possibleMoves.length)]);
-			this.client.sendMove(new Move(stone.getPosition(),possibleMoves[(new Random()).nextInt(possibleMoves.length)], 0 ));
-			this.stones = Stone.updateStonePosition(stones, stone.getPosition(), possibleMoves[(new Random()).nextInt(possibleMoves.length)]);
-			break;
 		}
+		Integer movedStonePosition = positions.get(new Random().nextInt(positions.size()));
+		
+		for (Stone stone : stones) {
+			if(stone.getPosition() == movedStonePosition) {
+				movedStone = stone;
+			}
+		}
+		
+		Integer[] possibleMoves = movedStone.getValidMoves(this.gameboard, this.stones);
+		this.client.sendMove(new Move(movedStone.getPosition(),possibleMoves[(new Random()).nextInt(possibleMoves.length)], 0 ));
+		this.stones = Stone.updateStonePosition(stones, movedStone.getPosition(), possibleMoves[(new Random()).nextInt(possibleMoves.length)]);
 		System.out.println("Player " + this.client.getMyPlayerNumber() + " took " + (System.currentTimeMillis() - time)
 				+ " ms to finish processing valid moves");
-		// Integer[] stonePositions =
-		// gameboard.getPlayerPositions(this.client.getMyPlayerNumber());
-		// Integer movedStone = (new Random()).nextInt(stonePositions.length);
-		// this.client.sendMove(new Move(stonePositions[movedStone],
-		// allPossibleMoves.get((new Random()).nextInt(allPossibleMoves.size())), 0));
 
-		// TODO:
-		// - check whether the stone moving is allowed to move
-		// - refresh gameboard
-		// gameboard.
 	}
-	// TODO: Movedamn
 
 }

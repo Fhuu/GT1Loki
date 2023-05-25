@@ -115,13 +115,17 @@ public class Stone {
 	}
 	
 	public static Stone[] updateStonePosition(Stone[] stones, Integer from, Integer To) {
+		ArrayList<Integer> positions = new ArrayList<Integer>();
 		for(Stone stone : stones) {
 			if(stone.position == from) {
 				stone.setPosition(To);
 				break;
 			}
 		}
-		System.out.println("new array position: " + Arrays.toString(stones));
+		for(Stone stone : stones) {
+			positions.add(stone.position);
+		}
+		System.out.println("new array position: " + positions.toString());
 		return stones;
 		
 	}
