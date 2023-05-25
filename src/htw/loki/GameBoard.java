@@ -20,11 +20,9 @@ public class GameBoard {
 	private static GameBoard gameBoard;
 	private Integer[][] neighbours = new Integer[36][3];
 	private Stone[][] stones;
-	
 	// TODO
 	private GameBoard() {
 		// Initial player positions
-		
 		
 		this.generateBoard();
 		stones[0][0] = new Stone(0);
@@ -43,6 +41,51 @@ public class GameBoard {
 		stones[2][3] = new Stone(35);
 }
 	
+	public void setPlayer1stones(Integer[] stones) {
+		this.player1stones = stones;
+	}
+	
+	public void setPlayer2stones(Integer[] stones) {
+		this.player2stones = stones;
+	}
+	
+	public void updateBoard(Integer player, Integer from, Integer to) {
+		ArrayList<Integer> newPositions = new ArrayList<Integer>(); 
+		if(player == 0){
+			Integer[] playerPosition = getPlayer0stones();
+			for(Integer pos : playerPosition) {
+				if(from == pos) continue;
+				newPositions.add(pos);
+				newPositions.add(to);
+			}
+			this.setPlayer0stones(playerPosition);
+		}
+		if(player == 1){
+			Integer[] playerPosition = getPlayer1stones();
+			for(Integer pos : playerPosition) {
+				if(from == pos) continue;
+				newPositions.add(pos);
+				newPositions.add(to);
+			}
+			this.setPlayer1stones(playerPosition);
+		}
+		if(player == 2){
+			Integer[] playerPosition = getPlayer2stones();
+			for(Integer pos : playerPosition) {
+				if(from == pos) continue;
+				newPositions.add(pos);
+				newPositions.add(to);
+			}
+			this.setPlayer2stones(playerPosition);
+		}
+		
+	}
+	
+	public void createInitialStonePosition() {
+		setPlayer0stones(new Integer[] { 0, 1, 2, 3 });
+		setPlayer1stones(new Integer[] { 16, 25, 26, 27 });
+		setPlayer2stones(new Integer[] { 24, 33, 34, 35 });
+	}
 	
 	public static GameBoard getInstance() {
 		if(gameBoard == null) gameBoard = new GameBoard();
@@ -206,7 +249,6 @@ public class GameBoard {
 		this.neighbours[35][1] = -1;
 		this.neighbours[35][2] = -1;
 	}
-	
 	
 	public boolean hasPlayerWon(int playerNumber) {
         Stone[] stones = this.stones[playerNumber];
