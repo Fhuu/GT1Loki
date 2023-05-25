@@ -7,13 +7,9 @@ import java.util.List;
 public class Stone {
 
 	private Integer position;
-	private Integer playerNumber;
-	private Integer from;
-	private Integer to;
-
-	public Stone(int stonePosition, int playerNumber) {
+	
+	public Stone(int stonePosition) {
 		this.setPosition(stonePosition);
-		this.playerNumber = playerNumber;
 	}
 	
 	public Integer getFrom() {
@@ -46,11 +42,12 @@ public class Stone {
 		setTo(to);
 		setPosition(to);
 	}
-
-	public void undoMoveStone() {
-		setPosition(getFrom());
-	}
-
+	
+	public Integer[] getValidMoves(int clientNumber) {
+		GameBoard gameboard = GameBoard.getInstance();
+		final Stone[] stones = gameboard.getStones(clientNumber);
+  
+  }
 	public Integer[] getValidMoves(GameBoard gameboard, Stone[] stones) {
 		Integer[] positions = new Integer[4];
 		for (int index = 0; index < positions.length; index++) {
@@ -77,12 +74,7 @@ public class Stone {
 			if (this.isValidMove(move, gameboard, stones))
 				validMoves.add(move);
 		}
-
-		for (Integer validMove : validMoves) {
-			System.out.println("valid moves for stone with position "
-					+ this.position + ", player number " + this.playerNumber + " is " + validMove);
-		}
-
+    
 		return validMoves.toArray(new Integer[validMoves.size()]);
 	}
 
@@ -113,7 +105,7 @@ public class Stone {
 
 		return true;
 	}
-	
+  
 	public static Stone[] updateStonePosition(Stone[] stones, Integer from, Integer To) {
 		ArrayList<Integer> positions = new ArrayList<Integer>();
 		for(Stone stone : stones) {
@@ -129,5 +121,5 @@ public class Stone {
 		return stones;
 		
 	}
-
+  
 }

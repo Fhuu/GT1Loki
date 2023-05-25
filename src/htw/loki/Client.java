@@ -103,7 +103,6 @@ public class Client extends Thread {
 	            // berechne genialen eigenen Zug
 	            move();
 	        }
-
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -137,7 +136,6 @@ public class Client extends Thread {
 		
 		System.out.println("Player " + this.client.getMyPlayerNumber() + " took " + (System.currentTimeMillis() - time)
 				+ " ms to finish processing valid moves");
-
 	}
 
 }

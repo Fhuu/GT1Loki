@@ -1,6 +1,7 @@
 package htw.loki;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * DOKU:
@@ -18,33 +19,27 @@ public class GameBoard {
 
 	private static GameBoard gameBoard;
 	private Integer[][] neighbours = new Integer[36][3];
-	private Integer[] player0stones = new Integer[4];
-	private Integer[] player1stones = new Integer[4];
-	private Integer[] player2stones = new Integer[4];
-	
+	private Stone[][] stones;
 	// TODO
 	private GameBoard() {
 		// Initial player positions
 		
 		this.generateBoard();
-		this.createInitialStonePosition();
-	}
-	
-	public Integer[] getPlayer0stones() {
-		return this.player0stones;
-	}
-	
-	public Integer[] getPlayer1stones() {
-		return this.player1stones;
-	}
-	
-	public Integer[] getPlayer2stones() {
-		return this.player2stones;
-	}
-	
-	public void setPlayer0stones(Integer[] stones) {
-		this.player0stones = stones;
-	}
+		stones[0][0] = new Stone(0);
+		stones[0][1] = new Stone(1);
+		stones[0][2] = new Stone(2);
+		stones[0][3] = new Stone(3);
+
+		stones[1][0] = new Stone(16);
+		stones[1][1] = new Stone(25);
+		stones[1][2] = new Stone(26);
+		stones[1][3] = new Stone(27);
+
+		stones[2][0] = new Stone(24);
+		stones[2][1] = new Stone(33);
+		stones[2][2] = new Stone(34);
+		stones[2][3] = new Stone(35);
+}
 	
 	public void setPlayer1stones(Integer[] stones) {
 		this.player1stones = stones;
@@ -95,6 +90,11 @@ public class GameBoard {
 	public static GameBoard getInstance() {
 		if(gameBoard == null) gameBoard = new GameBoard();
 		return gameBoard;
+	}
+	
+	
+	public Stone[] getStones(int playerNumber) {
+		return this.stones[playerNumber];
 	}
 	
 	
@@ -250,5 +250,15 @@ public class GameBoard {
 		this.neighbours[35][2] = -1;
 	}
 	
-
+	public boolean hasPlayerWon(int playerNumber) {
+        Stone[] stones = this.stones[playerNumber];
+        
+        ArrayList<Integer> winningPosition = new ArrayList<Integer>(Arrays.asList(playerNumber == 0 ? new Integer[] {25,26,27,28,29,30,31,32,33,34,35} : playerNumber == 1 ? new Integer[] {0,2,3,7,8,14,15,23,24,34,35} : new Integer[] {0,2,1,5,4,10,9,17,16,26,25}));
+        
+        for(Stone stone : stones) {
+            if(!winningPosition.contains(stone.getPosition())) return false;
+        }
+        
+        return true;
+    }
 }
