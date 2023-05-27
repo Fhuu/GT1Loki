@@ -19,16 +19,9 @@ public class Stone {
 		final GameBoard gameboard = GameBoard.getInstance();
 		Integer[] neighbours = gameboard.getNeighbouringPosition(this.position);
 		
-		ArrayList<Integer> stonePositions = new ArrayList<Integer>();
-		for(Stone[] playerStones : gameboard.getAllStones()) {
-			for(Stone stone : playerStones) {
-				stonePositions.add(stone.getPosition()); 
-			}
-		}
-		
 		ArrayList<Integer> emptyNeighbours = new ArrayList<Integer>();
 		for(Integer neighbour : neighbours) {
-			if(stonePositions.contains(neighbour)) emptyNeighbours.add(neighbour);
+			if(gameboard.getStoneFrom(neighbour) != null) emptyNeighbours.add(neighbour);
 		}
 		
 		return emptyNeighbours.toArray(new Integer[emptyNeighbours.size()]);
