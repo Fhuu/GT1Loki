@@ -88,7 +88,7 @@ public class GameBoard {
 		    	for (int i : getAllStonePositionExcluding(0)) {
 		    	    if (i == to) {
 		    	    	System.out.println("ArrayExlude: " + getAllStonePositionExcluding(0).toString() );
-		    	        return true;
+		    	        return false;
 		    	    }
 		    	}
 		        break;
@@ -96,7 +96,7 @@ public class GameBoard {
 		    	for (int i : getAllStonePositionExcluding(1)) {
 		    	    if (i == to) {
 		    	    	System.out.println("ArrayExlude: " + getAllStonePositionExcluding(1).toString() );
-		    	        return true;
+		    	        return false;
 		    	    }
 		    	}
 		        break;
@@ -104,15 +104,36 @@ public class GameBoard {
 		    	for (int i : getAllStonePositionExcluding(2)) {
 		    	    if (i == to) {
 		    	    	System.out.println("ArrayExlude: " + getAllStonePositionExcluding(2).toString() );
-		    	        return true;
+		    	        return false;
 		    	    }
 		    	}
 		        break;
 		}
-		return false;
+		return true;
 	}
 	
-	public void updateOtherPlayer(Integer playerNumber, Integer from, Integer to) {
+	public void updateOtherPlayer(Integer from, Integer to) {
+		
+		if(Arrays.asList(this.stones[0]).contains(from)) {
+			for(Stone stone : this.stones[0]) {
+				if (stone.getPosition() == from) stone.setPosition(to);
+				break;
+			}
+		}
+		
+		if(Arrays.asList(this.stones[1]).contains(from)) {
+			for(Stone stone : this.stones[1]) {
+				if (stone.getPosition() == from) stone.setPosition(to);
+				break;
+			}
+		}
+		
+		if(Arrays.asList(this.stones[2]).contains(from)) {
+			for(Stone stone : this.stones[2]) {
+				if (stone.getPosition() == from) stone.setPosition(to);
+				break;
+			}
+		}
 		
 	}
 	

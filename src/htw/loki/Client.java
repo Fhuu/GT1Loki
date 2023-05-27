@@ -88,15 +88,16 @@ public class Client extends Thread {
 					
 				} 
 				
-//				if(gameboard.isTargetEmpty(playerNumber, movedStonePosition) == false) {
-//					Integer[] possiblePush = gameboard.getNeighbouringPosition(selectedMove);
-//					for(Integer push : possiblePush) {
-//						if(gameboard.isTargetEmpty(playerNumber, push) == true) {
-//							this.client.sendMove(new Move(stone.getPosition(),selectedMove, push ));
-//							stone.setPosition(selectedMove);
-//						}
-//					}
-//				}
+				if(gameboard.isTargetEmpty(playerNumber, movedStonePosition) == false) {
+					Integer[] possiblePush = gameboard.getNeighbouringPosition(selectedMove);
+					for(Integer push : possiblePush) {
+						if(gameboard.isTargetEmpty(playerNumber, push) == true) {
+							this.client.sendMove(new Move(stone.getPosition(),selectedMove, push ));
+							gameboard.updateOtherPlayer(selectedMove, push);
+							stone.setPosition(selectedMove);
+						}
+					}
+				}
 				
 				break;
 			}

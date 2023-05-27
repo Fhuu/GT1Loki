@@ -21,6 +21,11 @@ public class Stone {
 		this.position = position;
 	}
 	
+	
+	public Integer[] getEmptyNeighbors() {
+		
+		return null;
+	}
 
 
 
