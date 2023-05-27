@@ -28,7 +28,7 @@ public class Client extends Thread {
 	public Client(String hostname, int clientNumber) {
 		this.hostname = hostname;
 		this.clientNumber = clientNumber;
-		this.gameboard = GameBoard.getInstance();
+		this.gameboard = new GameBoard();
 	}
 
 	@Override
@@ -50,7 +50,7 @@ public class Client extends Thread {
 		final int playerNumber = this.client.getMyPlayerNumber();
 		final Stone[] stones = this.gameboard.getStones(playerNumber);
 		for(Stone stone : stones) {
-			Integer[] moves = stone.getValidMoves(playerNumber);
+			Integer[] moves = stone.getValidMoves(this.gameboard);
 			String stringResult = "";
 			for(Integer move : moves) {
 				stringResult = stringResult + ", " + move;

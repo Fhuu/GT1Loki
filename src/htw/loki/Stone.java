@@ -15,8 +15,7 @@ public class Stone {
 	}
 	
 	
-	public Integer[] allEmptyNeighbour() {
-		final GameBoard gameboard = GameBoard.getInstance();
+	public Integer[] allEmptyNeighbour(final GameBoard gameboard) {
 		Integer[] neighbours = gameboard.getNeighbouringPosition(this.position);
 		
 		ArrayList<Integer> emptyNeighbours = new ArrayList<Integer>();
@@ -37,8 +36,7 @@ public class Stone {
 	}
 
 
-	public Integer[] getValidMoves() {
-		final GameBoard gameboard = GameBoard.getInstance();
+	public Integer[] getValidMoves(final GameBoard gameboard) {
 		final Stone[] stones = gameboard.getStones(this.playerNumber);
 		final Integer[] positions = new Integer[4];
 		
