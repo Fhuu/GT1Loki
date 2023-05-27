@@ -7,9 +7,31 @@ import java.util.List;
 public class Stone {
 
 	private Integer position;
+	private Integer playerNumber;
 	
-	public Stone(int stonePosition) {
-		this.setPosition(stonePosition);
+	public Stone(int playerNumber, int stonePosition) {
+		this.position = stonePosition;
+		this.playerNumber = playerNumber;
+	}
+	
+	
+	public Integer[] allEmptyNeighbour() {
+		final GameBoard gameboard = GameBoard.getInstance();
+		Integer[] neighbours = gameboard.getNeighbouringPosition(this.position);
+		
+		ArrayList<Integer> stonePositions = new ArrayList<Integer>();
+		for(Stone[] playerStones : gameboard.getAllStones()) {
+			for(Stone stone : playerStones) {
+				stonePositions.add(stone.getPosition()); 
+			}
+		}
+		
+		ArrayList<Integer> emptyNeighbours = new ArrayList<Integer>();
+		for(Integer neighbour : neighbours) {
+			if(stonePositions.contains(neighbour)) emptyNeighbours.add(neighbour);
+		}
+		
+		return emptyNeighbours.toArray(new Integer[emptyNeighbours.size()]);
 	}
 
 
@@ -22,9 +44,9 @@ public class Stone {
 	}
 
 
-	public Integer[] getValidMoves(int playerNumber) {
+	public Integer[] getValidMoves() {
 		final GameBoard gameboard = GameBoard.getInstance();
-		final Stone[] stones = gameboard.getStones(playerNumber);
+		final Stone[] stones = gameboard.getStones(this.playerNumber);
 		final Integer[] positions = new Integer[4];
 		
 		for (int index = 0; index < positions.length; index++) positions[index] = stones[index].getPosition();
