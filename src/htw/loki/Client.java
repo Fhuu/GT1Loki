@@ -64,7 +64,7 @@ public class Client extends Thread {
 		ArrayList<Integer> positions = new ArrayList<Integer>();
 		Stone movedStone = null;
 		for(Stone stone : stones) {
-			Integer[] moves = stone.getValidMoves(playerNumber);
+			Integer[] moves = stone.getValidMoves();
 			if(moves.length == 0) continue;
 			positions.add(stone.getPosition());
 			String stringResult = "";
@@ -78,7 +78,7 @@ public class Client extends Thread {
 		
 		for (Stone stone : stones) {
 			if(stone.getPosition() == movedStonePosition) {
-				Integer[] possibleMoves = stone.getValidMoves(playerNumber);
+				Integer[] possibleMoves = stone.getValidMoves();
 				Integer selectedMove = possibleMoves[(new Random()).nextInt(possibleMoves.length)];
 				System.out.println("Player " + playerNumber + " Moving Stone " + stone.getPosition() + " to " + selectedMove );
 				
