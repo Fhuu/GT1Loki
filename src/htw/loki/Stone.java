@@ -20,6 +20,8 @@ public class Stone {
 	public void setPosition(Integer position) {
 		this.position = position;
 	}
+	
+
 
 
 	public Integer[] getValidMoves(int playerNumber) {
@@ -68,18 +70,6 @@ public class Stone {
 		return true;
 	}
   
-	public static Stone[] updateStonePosition(Stone[] stones, Integer from, Integer To) {
-		ArrayList<Integer> positions = new ArrayList<Integer>();
-		for(Stone stone : stones) {
-			if(stone.position == from) {
-				stone.setPosition(To);
-				break;
-			}
-		}
-		for(Stone stone : stones) positions.add(stone.position); 
-		System.out.println("new array position: " + positions.toString());
-		
-		return stones;
-	}
+
   
 }

@@ -58,10 +58,12 @@ public class GameBoard {
 	public Integer[] getAllStonePositionExcluding(int playerNumber) {
 		Integer[] positions = new Integer[8];
 		
+		int indexPosition = 0;
 		for(int index = 0; index <= 2; index++) {
 			if(index == playerNumber) continue;
 			for(int stoneIndex = 0; stoneIndex < 4; stoneIndex++) {
-				positions[index * 4 + stoneIndex] = this.stones[index][stoneIndex].getPosition(); 
+				positions[indexPosition] = this.stones[index][stoneIndex].getPosition(); 
+				indexPosition++;
 			}
 		}
 		
@@ -74,9 +76,44 @@ public class GameBoard {
 	}
 	
 	
+	
 	// returns all the neighbouring positions of a position
 	public Integer[] getNeighbouringPosition(Integer index) {
 		return this.neighbours[index];
+	}
+	
+	public boolean isTargetEmpty(Integer playerNumber ,Integer to) {
+		switch(playerNumber) {
+		    case 0:
+		    	for (int i : getAllStonePositionExcluding(0)) {
+		    	    if (i == to) {
+		    	    	System.out.println("ArrayExlude: " + getAllStonePositionExcluding(0).toString() );
+		    	        return true;
+		    	    }
+		    	}
+		        break;
+		    case 1:
+		    	for (int i : getAllStonePositionExcluding(1)) {
+		    	    if (i == to) {
+		    	    	System.out.println("ArrayExlude: " + getAllStonePositionExcluding(1).toString() );
+		    	        return true;
+		    	    }
+		    	}
+		        break;
+		    case 2:
+		    	for (int i : getAllStonePositionExcluding(2)) {
+		    	    if (i == to) {
+		    	    	System.out.println("ArrayExlude: " + getAllStonePositionExcluding(2).toString() );
+		    	        return true;
+		    	    }
+		    	}
+		        break;
+		}
+		return false;
+	}
+	
+	public void updateOtherPlayer(Integer playerNumber, Integer from, Integer to) {
+		
 	}
 	
 	
