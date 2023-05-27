@@ -19,6 +19,7 @@ public class Client extends Thread {
 	private String hostname;
 	private int clientNumber;
 	private GameBoard gameboard;
+	
 
 	/**
 	 * hostname, port, teamname, image path
@@ -60,6 +61,7 @@ public class Client extends Thread {
 	}
 
 	public void move() {
+		Boolean isTargetEmpty = false;
 		long time = System.currentTimeMillis();
 		final int playerNumber = this.client.getMyPlayerNumber();
 		Stone[] stones = this.gameboard.getStones(playerNumber);
@@ -67,6 +69,8 @@ public class Client extends Thread {
 		Stone movedStone = null;
 		for (Stone stone : stones) {
 			Integer[] moves = stone.getValidMoves(this.gameboard);
+			if(moves.length == 0) continue;
+			positions.add(stone.getPosition());
 			String stringResult = "";
 			for (Integer move : moves) {
 				stringResult = stringResult + ", " + move;
@@ -83,23 +87,23 @@ public class Client extends Thread {
 				Integer selectedMove = possibleMoves[(new Random()).nextInt(possibleMoves.length)];
 				System.out.println(
 						"Player " + playerNumber + " Moving Stone " + stone.getPosition() + " to " + selectedMove);
-
-				if (gameboard.isTargetEmpty(playerNumber, movedStonePosition) == true) {
+				isTargetEmpty = gameboard.isTargetEmpty(playerNumber, selectedMove);
+				if (isTargetEmpty == true) {
 					this.client.sendMove(new Move(stone.getPosition(), selectedMove, 0));
 					stone.setPosition(selectedMove);
 
 				}
 
-				if (gameboard.isTargetEmpty(playerNumber, movedStonePosition) == false) {
-					Integer[] possiblePush = gameboard.getNeighbouringPosition(selectedMove);
-					for (Integer push : possiblePush) {
-						if (gameboard.isTargetEmpty(playerNumber, push) == true) {
-							this.client.sendMove(new Move(stone.getPosition(), selectedMove, push));
-							gameboard.updateOtherPlayer(selectedMove, push);
-							stone.setPosition(selectedMove);
-						}
-					}
-				}
+//				if (gameboard.isTargetEmpty(playerNumber, movedStonePosition) == false) {
+//					Integer[] possiblePush = gameboard.getNeighbouringPosition(selectedMove);
+//					for (Integer push : possiblePush) {
+//						if (gameboard.isTargetEmpty(playerNumber, push) == true) {
+//							this.client.sendMove(new Move(stone.getPosition(), selectedMove, push));
+//							gameboard.updateOtherPlayer(selectedMove, push);
+//							stone.setPosition(selectedMove);
+//						}
+//					}
+//				}
 
 				break;
 			}

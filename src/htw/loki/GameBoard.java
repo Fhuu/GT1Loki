@@ -94,6 +94,7 @@ public class GameBoard {
 			case 0:
 				for (int i : getAllStonePositionExcluding(0)) {
 					if (i == to) {
+						System.out.println(i + " == " + to);
 						System.out.println("ArrayExlude: " + getAllStonePositionExcluding(0).toString());
 						return false;
 					}
@@ -102,6 +103,7 @@ public class GameBoard {
 			case 1:
 				for (int i : getAllStonePositionExcluding(1)) {
 					if (i == to) {
+						System.out.println(i + " == " + to);
 						System.out.println("ArrayExlude: " + getAllStonePositionExcluding(1).toString());
 						return false;
 					}
@@ -110,6 +112,7 @@ public class GameBoard {
 			case 2:
 				for (int i : getAllStonePositionExcluding(2)) {
 					if (i == to) {
+						System.out.println(i + " == " + to);
 						System.out.println("ArrayExlude: " + getAllStonePositionExcluding(2).toString());
 						return false;
 					}
