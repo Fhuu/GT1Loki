@@ -58,10 +58,12 @@ public class GameBoard {
 	public Integer[] getAllStonePositionExcluding(int playerNumber) {
 		Integer[] positions = new Integer[8];
 		
+		int indexPosition = 0;
 		for(int index = 0; index <= 2; index++) {
 			if(index == playerNumber) continue;
 			for(int stoneIndex = 0; stoneIndex < 4; stoneIndex++) {
-				positions[index * 4 + stoneIndex] = this.stones[index][stoneIndex].getPosition(); 
+				positions[indexPosition] = this.stones[index][stoneIndex].getPosition(); 
+				indexPosition++;
 			}
 		}
 		
