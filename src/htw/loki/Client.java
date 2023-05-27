@@ -28,29 +28,31 @@ public class Client extends Thread {
 	public Client(String hostname, int clientNumber) {
 		this.hostname = hostname;
 		this.clientNumber = clientNumber;
-		this.gameboard = GameBoard.getInstance();
+		this.gameboard = new GameBoard();
 	}
-	
-//	public void setActivePlayer(Integer player) {
-//		this.activePlayer = player;
-//	}
+
+	// public void setActivePlayer(Integer player) {
+	// this.activePlayer = player;
+	// }
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		System.out.println("Client " + this.clientNumber + " connecting to " + this.hostname + " with image from .\\image\\image" + (this.clientNumber + 1) + ".png");
+		System.out.println("Client " + this.clientNumber + " connecting to " + this.hostname
+				+ " with image from .\\image\\image" + (this.clientNumber + 1) + ".png");
 		try {
-			this.client = new NetworkClient(this.hostname, "player" + clientNumber, ImageIO.read(new File(".\\image\\image" + (this.clientNumber + 1) + ".png")));
-			
-			while(true) {
+			this.client = new NetworkClient(this.hostname, "player" + clientNumber,
+					ImageIO.read(new File(".\\image\\image" + (this.clientNumber + 1) + ".png")));
+
+			while (true) {
 				Move receivedMove = this.client.receiveMove();
-				while(receivedMove != null) {
-	            	break;
-					
+				while (receivedMove != null) {
+					break;
+
 				}
 				this.move();
 			}
-			
+
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -63,47 +65,46 @@ public class Client extends Thread {
 		Stone[] stones = this.gameboard.getStones(playerNumber);
 		ArrayList<Integer> positions = new ArrayList<Integer>();
 		Stone movedStone = null;
-		for(Stone stone : stones) {
-			Integer[] moves = stone.getValidMoves();
-			if(moves.length == 0) continue;
-			positions.add(stone.getPosition());
+		for (Stone stone : stones) {
+			Integer[] moves = stone.getValidMoves(this.gameboard);
 			String stringResult = "";
-			for(Integer move : moves) {
+			for (Integer move : moves) {
 				stringResult = stringResult + ", " + move;
 			}
-			//System.out.println("Player " + playerNumber + " can move stone " + stone.getPosition() + " to " + stringResult);
+			// System.out.println("Player " + playerNumber + " can move stone " +
+			// stone.getPosition() + " to " + stringResult);
 		}
-		
+
 		Integer movedStonePosition = positions.get(new Random().nextInt(positions.size()));
-		
+
 		for (Stone stone : stones) {
-			if(stone.getPosition() == movedStonePosition) {
-				Integer[] possibleMoves = stone.getValidMoves();
+			if (stone.getPosition() == movedStonePosition) {
+				Integer[] possibleMoves = stone.getValidMoves(this.gameboard);
 				Integer selectedMove = possibleMoves[(new Random()).nextInt(possibleMoves.length)];
-				System.out.println("Player " + playerNumber + " Moving Stone " + stone.getPosition() + " to " + selectedMove );
-				
-				if(gameboard.isTargetEmpty(playerNumber, movedStonePosition) == true) {
-					this.client.sendMove(new Move(stone.getPosition(),selectedMove, 0 ));
+				System.out.println(
+						"Player " + playerNumber + " Moving Stone " + stone.getPosition() + " to " + selectedMove);
+
+				if (gameboard.isTargetEmpty(playerNumber, movedStonePosition) == true) {
+					this.client.sendMove(new Move(stone.getPosition(), selectedMove, 0));
 					stone.setPosition(selectedMove);
-					
-				} 
-				
-				if(gameboard.isTargetEmpty(playerNumber, movedStonePosition) == false) {
+
+				}
+
+				if (gameboard.isTargetEmpty(playerNumber, movedStonePosition) == false) {
 					Integer[] possiblePush = gameboard.getNeighbouringPosition(selectedMove);
-					for(Integer push : possiblePush) {
-						if(gameboard.isTargetEmpty(playerNumber, push) == true) {
-							this.client.sendMove(new Move(stone.getPosition(),selectedMove, push ));
+					for (Integer push : possiblePush) {
+						if (gameboard.isTargetEmpty(playerNumber, push) == true) {
+							this.client.sendMove(new Move(stone.getPosition(), selectedMove, push));
 							gameboard.updateOtherPlayer(selectedMove, push);
 							stone.setPosition(selectedMove);
 						}
 					}
 				}
-				
+
 				break;
 			}
 		}
-				
-		
+
 	}
 
 }

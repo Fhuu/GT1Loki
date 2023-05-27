@@ -22,12 +22,11 @@ import java.util.Arrays;
  */
 public class GameBoard {
 
-	private static GameBoard gameBoard;
 	private Integer[][] neighbours = new Integer[36][3];
 	private Stone[][] stones;
 
 	// TODO
-	private GameBoard() {
+	public GameBoard() {
 		// Initial player positions
 
 		this.generateBoard();
@@ -47,12 +46,6 @@ public class GameBoard {
 		this.stones[2][1] = new Stone(2, 33);
 		this.stones[2][2] = new Stone(2, 34);
 		this.stones[2][3] = new Stone(2, 35);
-	}
-
-	public static GameBoard getInstance() {
-		if (gameBoard == null)
-			gameBoard = new GameBoard();
-		return gameBoard;
 	}
 
 	public Stone[][] getAllStones() {
