@@ -27,20 +27,20 @@ public class GameBoard {
 		this.generateBoard();
 		
 		this.stones = new Stone[3][4];
-		this.stones[0][0] = new Stone(0);
-		this.stones[0][1] = new Stone(1);
-		this.stones[0][2] = new Stone(2);
-		this.stones[0][3] = new Stone(3);
+		this.stones[0][0] = new Stone(0, 0);
+		this.stones[0][1] = new Stone(0, 1);
+		this.stones[0][2] = new Stone(0, 2);
+		this.stones[0][3] = new Stone(0, 3);
 
-		this.stones[1][0] = new Stone(16);
-		this.stones[1][1] = new Stone(25);
-		this.stones[1][2] = new Stone(26);
-		this.stones[1][3] = new Stone(27);
+		this.stones[1][0] = new Stone(1, 16);
+		this.stones[1][1] = new Stone(1, 25);
+		this.stones[1][2] = new Stone(1, 26);
+		this.stones[1][3] = new Stone(1, 27);
 
-		this.stones[2][0] = new Stone(24);
-		this.stones[2][1] = new Stone(33);
-		this.stones[2][2] = new Stone(34);
-		this.stones[2][3] = new Stone(35);
+		this.stones[2][0] = new Stone(2, 24);
+		this.stones[2][1] = new Stone(2, 33);
+		this.stones[2][2] = new Stone(2, 34);
+		this.stones[2][3] = new Stone(2, 35);
 	}
 
 	
@@ -76,7 +76,17 @@ public class GameBoard {
 	}
 	
 	
-	// returns all the neighbouring positions of a position
+	public Stone getStoneFrom(int position) {
+		for(Stone[] playerStone : this.stones) for(Stone stone : playerStone) if(stone.getPosition() == position) return stone;
+		return null;
+	}
+	
+	
+	/**
+	 * 
+	 * @param index boardPosition
+	 * @return Array of neighbour of boardPositiion
+	 */
 	public Integer[] getNeighbouringPosition(Integer index) {
 		return this.neighbours[index];
 	}
