@@ -2,6 +2,7 @@ package htw.loki;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * DOKU:
@@ -122,32 +123,46 @@ public class GameBoard {
 		return true;
 	}
 
-	public void updateOtherPlayer(Integer from, Integer to) {
-
-		if (Arrays.asList(this.stones[0]).contains(from)) {
-			for (Stone stone : this.stones[0]) {
-				if (stone.getPosition() == from)
-					stone.setPosition(to);
-				break;
+	public void pushOtherPlayer(Integer to, Integer push) {
+		for (Stone[] stones : this.stones) {
+			for(Stone stone : stones) {
+				if (stone.getPosition() == to) {
+					stone.setPosition(push);
+					break;
+				}
 			}
 		}
-
-		if (Arrays.asList(this.stones[1]).contains(from)) {
-			for (Stone stone : this.stones[1]) {
-				if (stone.getPosition() == from)
+	}
+	
+	public Integer[] getAllEmptyNeighbour(Integer position) {
+		Integer[] neighbours = this.getNeighbouringPosition(position);
+		
+		ArrayList<Integer> emptyNeighbours = new ArrayList<Integer>();
+		for(Integer neighbour : neighbours) {
+			if(this.getStoneFrom(neighbour) != null) emptyNeighbours.add(neighbour);
+		}
+		
+		return emptyNeighbours.toArray(new Integer[emptyNeighbours.size()]);
+	}
+	
+	public void updateGameBoard(Integer from, Integer to, Integer push) {
+		for (Stone[] stones : this.stones) {
+			for(Stone stone : stones) {
+				if (stone.getPosition() == from) {
 					stone.setPosition(to);
-				break;
+					break;
+				}
 			}
 		}
-
-		if (Arrays.asList(this.stones[2]).contains(from)) {
-			for (Stone stone : this.stones[2]) {
-				if (stone.getPosition() == from)
-					stone.setPosition(to);
-				break;
+		
+		for (Stone[] stones : this.stones) {
+			for(Stone stone : stones) {
+				if (stone.getPosition() == to && to != push) {
+					stone.setPosition(push);
+					break;
+				}
 			}
 		}
-
 	}
 
 	private void generateBoard() {
