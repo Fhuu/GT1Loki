@@ -93,28 +93,28 @@ public class GameBoard {
 	public boolean isTargetEmpty(Integer playerNumber, Integer to) {
 		switch (playerNumber) {
 			case 0:
-				for (int i : getAllStonePositionExcluding(0)) {
+				for (int i : this.getAllStonePositionExcluding(0)) {
 					if (i == to) {
 						System.out.println(i + " == " + to);
-						System.out.println("ArrayExlude: " + getAllStonePositionExcluding(0).toString());
+						System.out.println("ArrayExlude: " + this.getAllStonePositionExcluding(0).toString());
 						return false;
 					}
 				}
 				break;
 			case 1:
-				for (int i : getAllStonePositionExcluding(1)) {
+				for (int i : this.getAllStonePositionExcluding(1)) {
 					if (i == to) {
 						System.out.println(i + " == " + to);
-						System.out.println("ArrayExlude: " + getAllStonePositionExcluding(1).toString());
+						System.out.println("ArrayExlude: " + this.getAllStonePositionExcluding(1).toString());
 						return false;
 					}
 				}
 				break;
 			case 2:
-				for (int i : getAllStonePositionExcluding(2)) {
+				for (int i : this.getAllStonePositionExcluding(2)) {
 					if (i == to) {
 						System.out.println(i + " == " + to);
-						System.out.println("ArrayExlude: " + getAllStonePositionExcluding(2).toString());
+						System.out.println("ArrayExlude: " + this.getAllStonePositionExcluding(2).toString());
 						return false;
 					}
 				}
@@ -145,7 +145,20 @@ public class GameBoard {
 		return emptyNeighbours.toArray(new Integer[emptyNeighbours.size()]);
 	}
 	
-	public void updateGameBoard(Integer from, Integer to, Integer push) {
+	public void updateGameBoard(Integer playerNumber, Integer from, Integer to, Integer push) {
+		Integer[] neighbours = this.getAllStonePositionExcluding(playerNumber);
+		ArrayList<Integer> neighboursList = new ArrayList<>(Arrays.asList(neighbours));
+		
+		// update push
+		for (Stone[] stones : this.stones) {
+			for(Stone stone : stones) {
+				if (stone.getPosition() == to && to != push && neighboursList.contains(to) ) {
+					stone.setPosition(push);
+					break;
+				}
+			}
+		}
+		
 		for (Stone[] stones : this.stones) {
 			for(Stone stone : stones) {
 				if (stone.getPosition() == from) {
@@ -155,14 +168,7 @@ public class GameBoard {
 			}
 		}
 		
-		for (Stone[] stones : this.stones) {
-			for(Stone stone : stones) {
-				if (stone.getPosition() == to && to != push) {
-					stone.setPosition(push);
-					break;
-				}
-			}
-		}
+
 	}
 
 	private void generateBoard() {

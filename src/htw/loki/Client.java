@@ -50,7 +50,7 @@ public class Client extends Thread {
 			while (true) {
 				Move receivedMove = this.client.receiveMove();
 				while (receivedMove != null) {	            	
-//	            	this.gameboard.updateGameBoard(receivedMove.from, receivedMove.to, receivedMove.push);
+//	            	this.gameboard.updateGameBoard(this.clientNumber, receivedMove.from, receivedMove.to, receivedMove.push);
 	            	break;
 				}
 				this.move();
