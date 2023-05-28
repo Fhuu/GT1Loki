@@ -4,7 +4,7 @@ public class Loki {
 	
 	private static Boolean hasWinner = false;
 	//private static GameBoard gameBoard = GameBoard.getInstance();
-	public static int playerCount = 1;
+	public static int playerCount = 3;
 
 	public static void hasWinner() {
 		Loki.hasWinner = true;
@@ -16,8 +16,11 @@ public class Loki {
         // Startbrettkonfiguration erstellen
 		
 		// Create three clients from different threads
-		Client clients = new Client("127.0.0.1", 0);
-		clients.start();
+		Client[] clients = new Client[3];
+		for(int index = 0; index < clients.length; index++) {
+			clients[index] = new Client("127.0.0.1", index);
+			clients[index].start();
+		}
 
         // in diesem Moment läuft das Spiel
 
