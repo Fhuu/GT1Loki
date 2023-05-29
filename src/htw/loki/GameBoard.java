@@ -21,7 +21,7 @@ import java.util.Random;
  * @author dirob
  *
  */
-public class GameBoard {
+public class GameBoard implements Cloneable {
 
 	private Integer[][] neighbours = new Integer[36][3];
 	private Stone[][] stones;
@@ -68,7 +68,12 @@ public class GameBoard {
 
 		return positions;
 	}
-
+	
+	public void setStones(Stone[][] stones) {
+		this.stones = stones;
+	}
+	
+	
 	public Stone[] getStones(int playerNumber) {
 		return this.stones[playerNumber];
 	}
@@ -237,17 +242,35 @@ public class GameBoard {
 	}
 
 	public boolean hasPlayerWon(int playerNumber) {
-		Stone[] stones = this.stones[playerNumber];
+        Stone[] stones = this.stones[playerNumber];
+        
+        ArrayList<Integer> winningPosition = new ArrayList<Integer>(Arrays.asList(playerNumber == 0 ? new Integer[] {25,26,27,28,29,30,31,32,33,34,35} : playerNumber == 1 ? new Integer[] {0,2,3,7,8,14,15,23,24,34,35} : new Integer[] {0,2,1,5,4,10,9,17,16,26,25}));
+        
+        for(Stone stone : stones) if(!winningPosition.contains(stone.getPosition())) return false;
+        
+        return true;
+    }
+	
+	
+	@Override
+	public GameBoard clone() {
+		
+		GameBoard clone = null;
+		try {
+			clone = (GameBoard) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 
-		ArrayList<Integer> winningPosition = new ArrayList<Integer>(
-				Arrays.asList(playerNumber == 0 ? new Integer[] { 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35 }
-						: playerNumber == 1 ? new Integer[] { 0, 2, 3, 7, 8, 14, 15, 23, 24, 34, 35 }
-								: new Integer[] { 0, 2, 1, 5, 4, 10, 9, 17, 16, 26, 25 }));
-
-		for (Stone stone : stones)
-			if (!winningPosition.contains(stone.getPosition()))
-				return false;
-
-		return true;
+		Stone[][] clonedStones = new Stone[3][4];
+		for(int index = 0; index <= 2; index++) {
+			for(int innerIndex = 0; innerIndex <= 3; innerIndex++) {
+				clonedStones[index][innerIndex] = this.stones[index][innerIndex].clone();
+			}
+		}
+		
+		clone.setStones(clonedStones);
+		
+		return clone;
 	}
 }

@@ -1,13 +1,8 @@
 package htw.loki;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class MoveCalculator {
 	
 	private AIAlgorithm algorithm;
-	private final int LARGEST_NUMBER = Integer.MAX_VALUE;
-	private final int SMALLEST_NUMBER = Integer.MIN_VALUE;
 	private int playerNumber;
 	
 	public MoveCalculator(AIAlgorithm algorithm, int playerNumber) {
@@ -16,16 +11,16 @@ public class MoveCalculator {
 	}
 	
 	
-	public int calculate(final GameBoard gameboard, Stone stone, int depth) {
-		if(this.algorithm.equals(AIAlgorithm.MINIMAX)) return minimax(gameboard, this.playerNumber, stone, depth);
+	public int calculate(final GameBoard gameboard, int depth) {
+		if(this.algorithm.equals(AIAlgorithm.MINIMAX)) return minimax(gameboard, this.playerNumber, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		return -1;
 	}
 	
 	
 	// TODO: fix for when only 2 players are playing
-	public int minimax(final GameBoard gameboard, int playerNumber, Stone stone, int depth) {
+	public int minimax(final GameBoard gameboard, int playerNumber, int depth, Integer alpha, Integer beta) {
 		final int nextPlayer = playerNumber >= 2 ? 0 : playerNumber + 1;
-		final ArrayList<Integer> othersPositions = new ArrayList<Integer>(Arrays.asList(gameboard.getAllStonePositionExcluding(this.playerNumber)));
+		
 		if(this.hasGameStopped(gameboard)) {
 			if(gameboard.hasPlayerWon(this.playerNumber)) return 2;
 			return -2;
@@ -35,33 +30,36 @@ public class MoveCalculator {
 			return 1;
 		}
 		
-		int result = 0;
+		int result = playerNumber == this.playerNumber ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		for(Stone playerStone : gameboard.getStones(playerNumber)) {
 			for(Integer position : playerStone.getValidMoves(gameboard)) {
 				int stoneOldPos = playerStone.getPosition();
 				playerStone.setPosition(position);
 				
 				if(playerNumber == this.playerNumber) {
-					result = Math.max(Integer.MIN_VALUE, minimax(gameboard, nextPlayer, playerStone, depth - 1));
-
+					Integer evaluation = minimax(gameboard, nextPlayer, depth - 1, alpha, beta);
+					result = Math.max(result, evaluation);
+					alpha = Math.max(alpha, evaluation);
+						
 					// undo move on local gameboard
 					playerStone.setPosition(stoneOldPos);
+					
+					if(beta <= alpha) break;
 
 					continue;
 				}
-				result = Math.min(Integer.MAX_VALUE, minimax(gameboard, nextPlayer, stone, depth));
+				Integer evaluation = minimax(gameboard, nextPlayer, depth - 1, alpha, beta);
+				result = Math.min(result, evaluation);
+				beta = Math.min(result, evaluation);
 				
 				// undo move on local gameboard
 				playerStone.setPosition(stoneOldPos);
+				
+				if(beta <= alpha) break;
 			}
-			
-			
-			return result;
-			
-		
 		}
 		
-		return 0;
+		return result;
 		
 	}
 	

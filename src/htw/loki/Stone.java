@@ -2,9 +2,8 @@ package htw.loki;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class Stone {
+public class Stone implements Cloneable {
 
 	private Integer position;
 	private Integer playerNumber;
@@ -94,4 +93,15 @@ public class Stone {
   
 
   
+	
+	@Override
+	public Stone clone(){
+		try {
+			return (Stone) super.clone();			
+		} catch(CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }
