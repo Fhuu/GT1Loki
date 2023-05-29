@@ -1,8 +1,14 @@
 package htw.loki;
 
-public class Loki {
+public class Loki2 {
+	
+	private static Boolean hasWinner = false;
 	//private static GameBoard gameBoard = GameBoard.getInstance();
-	public static int playerCount = 3;
+	public static int playerCount = 1;
+
+	public static void hasWinner() {
+		Loki2.hasWinner = true;
+	}
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -10,11 +16,8 @@ public class Loki {
         // Startbrettkonfiguration erstellen
 		
 		// Create three clients from different threads
-		Client[] clients = new Client[3];
-		for(int index = 0; index < clients.length; index++) {
-			clients[index] = new Client("127.0.0.1", index);
-			clients[index].start();
-		}
+		Client clients = new Client("127.0.0.1", 1);
+		clients.start();
 
         // in diesem Moment läuft das Spiel
 
