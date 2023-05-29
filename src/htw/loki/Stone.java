@@ -20,7 +20,7 @@ public class Stone {
 		
 		ArrayList<Integer> emptyNeighbours = new ArrayList<Integer>();
 		for(Integer neighbour : neighbours) {
-			if(gameboard.getStoneFrom(neighbour) == null) emptyNeighbours.add(neighbour);
+			if(gameboard.getStoneFrom(neighbour) == null && neighbour != -1) emptyNeighbours.add(neighbour);
 		}
 		
 		return emptyNeighbours.toArray(new Integer[emptyNeighbours.size()]);

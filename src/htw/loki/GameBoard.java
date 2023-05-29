@@ -80,6 +80,34 @@ public class GameBoard {
 					return stone;
 		return null;
 	}
+	
+	public void checkDeadStone() {
+	    for (Stone[] stones : this.stones) {
+	        for (Stone stone : stones) {
+	        	if (stone.getPosition() == -1) continue;
+	            Integer[] neighbouringPos = this.getNeighbouringPosition(stone.getPosition());
+	            ArrayList<Integer> positions = new ArrayList<>();
+
+	            for (Stone stein : this.stones[stone.getPlayerNumber()]) {
+	                if (stein.getPosition() == -1) continue;
+	            	positions.add(stein.getPosition());
+	            }
+
+	            boolean isDead = true;
+
+	            for (Integer pos : neighbouringPos) {
+	                if (positions.contains(pos)) {
+	                    isDead = false;
+	                    break;
+	                }
+	            }
+
+	            if (isDead) {
+	                stone.setPosition(-1);
+	            }
+	        }
+	    }
+	}
 
 	/**
 	 * 

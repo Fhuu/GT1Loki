@@ -54,12 +54,12 @@ public class Client extends Thread {
 	                if (this.gameboard.getStoneFrom(receivedMove.from) != null) {
 	                    System.out.println("updating Local from " + this.gameboard.getStoneFrom(receivedMove.from).getPosition() + " to " + receivedMove.to);
 	                    this.gameboard.getStoneFrom(receivedMove.from).setPosition(receivedMove.to);
+	                    gameboard.checkDeadStone();
 	                }
-
 	                receivedMove = this.client.receiveMove();
 	            }
 	            receivedMoveComplete = true;
-
+	            
 	            if (receivedMoveComplete) {
 	                this.move();
 	                receivedMoveComplete = false;
@@ -72,8 +72,6 @@ public class Client extends Thread {
 	}
 	
 	public void move() {
-		
-		long time = System.currentTimeMillis();
 		final int playerNumber = this.client.getMyPlayerNumber();
 		Stone[] stones = this.gameboard.getStones(playerNumber);
 		ArrayList<Integer> testPos = new ArrayList<Integer>();
@@ -84,6 +82,7 @@ public class Client extends Thread {
 		
 		ArrayList<Integer> positions = new ArrayList<Integer>();
 		for (Stone stone : stones) {
+			if (stone.getPosition() == -1) continue;
 			Integer[] moves = stone.getValidMoves(this.gameboard);
 			if(moves.length == 0) continue;
 			positions.add(stone.getPosition());
@@ -98,7 +97,7 @@ public class Client extends Thread {
 		Integer movedStonePosition = positions.get(new Random().nextInt(positions.size()));
 
 		for (Stone stone : stones) {
-			if (stone.getPosition() == movedStonePosition) {
+			if (stone.getPosition() == movedStonePosition && stone.getPosition() != -1) {
 				Integer[] possibleMoves = stone.getValidMoves(this.gameboard);
 				Integer selectedMove = possibleMoves[(new Random()).nextInt(possibleMoves.length)];
 				Stone targetPos = gameboard.getStoneFrom(selectedMove);
