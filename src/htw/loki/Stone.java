@@ -2,9 +2,8 @@ package htw.loki;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
-public class Stone {
+public class Stone implements Cloneable {
 
 	private Integer position;
 	private Integer playerNumber;
@@ -20,7 +19,7 @@ public class Stone {
 		
 		ArrayList<Integer> emptyNeighbours = new ArrayList<Integer>();
 		for(Integer neighbour : neighbours) {
-			if(gameboard.getStoneFrom(neighbour) != null) emptyNeighbours.add(neighbour);
+			if(gameboard.getStoneFrom(neighbour) == null) emptyNeighbours.add(neighbour);
 		}
 		
 		return emptyNeighbours.toArray(new Integer[emptyNeighbours.size()]);
@@ -95,4 +94,15 @@ public class Stone {
 		return stones;
 	}
   
+	
+	@Override
+	public Stone clone(){
+		try {
+			return (Stone) super.clone();			
+		} catch(CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
 }

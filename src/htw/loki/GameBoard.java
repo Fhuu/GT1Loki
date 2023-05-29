@@ -15,7 +15,7 @@ import java.util.Arrays;
  * @author dirob
  *
  */
-public class GameBoard {
+public class GameBoard implements Cloneable {
 
 	private Integer[][] neighbours = new Integer[36][3];
 	private Stone[][] stones;
@@ -40,7 +40,7 @@ public class GameBoard {
 		this.stones[2][1] = new Stone(2, 33);
 		this.stones[2][2] = new Stone(2, 34);
 		this.stones[2][3] = new Stone(2, 35);
-	}
+	} 
 	
 	public Stone[][] getAllStones() {
 		return this.stones;
@@ -60,6 +60,10 @@ public class GameBoard {
 		}
 		
 		return positions;
+	}
+	
+	public void setStones(Stone[][] stones) {
+		this.stones = stones;
 	}
 	
 	
@@ -240,4 +244,27 @@ public class GameBoard {
         
         return true;
     }
+	
+	
+	@Override
+	public GameBoard clone() {
+		
+		GameBoard clone = null;
+		try {
+			clone = (GameBoard) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+
+		Stone[][] clonedStones = new Stone[3][4];
+		for(int index = 0; index <= 2; index++) {
+			for(int innerIndex = 0; innerIndex <= 3; innerIndex++) {
+				clonedStones[index][innerIndex] = this.stones[index][innerIndex].clone();
+			}
+		}
+		
+		clone.setStones(clonedStones);
+		
+		return clone;
+	}
 }
