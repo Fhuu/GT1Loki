@@ -20,6 +20,7 @@ public class MoveCalculator {
 	// TODO: fix for when only 2 players are playing
 	public int minimax(final GameBoard gameboard, int playerNumber, int depth, Integer alpha, Integer beta) {
 		final int nextPlayer = playerNumber >= 2 ? 0 : playerNumber + 1;
+		if(!gameboard.getActivePlayers().contains(playerNumber)) return minimax(gameboard, playerNumber >= 2 ? 0 : playerNumber + 1, depth, alpha, beta);
 		
 		if(this.hasGameStopped(gameboard)) {
 			if(gameboard.hasPlayerWon(this.playerNumber)) return 2;
@@ -27,12 +28,15 @@ public class MoveCalculator {
 		}
 
 		if(depth == 0) {
-			return 1;
+			return 0;
 		}
 		
 		int result = playerNumber == this.playerNumber ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		for(Stone playerStone : gameboard.getStones(playerNumber)) {
 			for(Integer position : playerStone.getValidMoves(gameboard)) {
+				if(gameboard.getStoneFrom(position) != null && playerNumber == this.playerNumber) return 1;
+				if(gameboard.getStoneFrom(position) != null && playerNumber != this.playerNumber) return -1;
+				
 				int stoneOldPos = playerStone.getPosition();
 				playerStone.setPosition(position);
 				

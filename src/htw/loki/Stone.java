@@ -14,11 +14,12 @@ public class Stone implements Cloneable {
 	}
 	
 	
-	public Integer[] allEmptyNeighbour(final GameBoard gameboard) {
+	public Integer[] getAllEmptyNeighbour(final GameBoard gameboard) {
 		Integer[] neighbours = gameboard.getNeighbouringPosition(this.position);
 		
 		ArrayList<Integer> emptyNeighbours = new ArrayList<Integer>();
 		for(Integer neighbour : neighbours) {
+			if(neighbour == -1) continue;
 			if(gameboard.getStoneFrom(neighbour) == null) emptyNeighbours.add(neighbour);
 		}
 		

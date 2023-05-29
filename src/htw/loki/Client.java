@@ -3,6 +3,7 @@ package htw.loki;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.FutureTask;
@@ -19,7 +20,7 @@ public class Client extends Thread {
 	private int clientNumber;
 	private GameBoard gameboard;
 	private MoveCalculator moveCalculator;
-	private Integer timeLimit;
+	final String[] names = new String[] {"alpha", "beta", "pruning"};
 
 
 	/**
@@ -31,9 +32,7 @@ public class Client extends Thread {
 		this.hostname = hostname;
 		this.clientNumber = clientNumber;
 		this.gameboard = new GameBoard();
-//		this.client = new NetworkClient(this.hostname, "player" + clientNumber, ImageIO.read(new File(".\\image\\image" + (this.clientNumber + 1) + ".png")));
-		this.timeLimit = 7;
-		this.moveCalculator = new MoveCalculator(AIAlgorithm.MINIMAX, 0);
+		
 	}
 
 
@@ -41,36 +40,74 @@ public class Client extends Thread {
 	public void run() {
 		// TODO Auto-generated method stub
 		System.out.println("Client " + this.clientNumber + " connecting to " + this.hostname + " with image from .\\image\\image" + (this.clientNumber + 1) + ".png");
-		this.move();
+		try {
+			this.client = new NetworkClient(this.hostname, names[clientNumber], ImageIO.read(new File(".\\image\\image" + (this.clientNumber + 1) + ".png")));
+			this.moveCalculator = new MoveCalculator(AIAlgorithm.MINIMAX, this.client.getMyPlayerNumber());
+			this.move();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		this.moveCalculator = new MoveCalculator(AIAlgorithm.MINIMAX, this.client.getMyPlayerNumber());
+		
 	}
 	
 	public void move() {
+		Move receivedMove;
+		while(true) {
+			while((receivedMove = this.client.receiveMove()) != null) {
+				if(receivedMove.push != 255){
+					Stone pushedStone = this.gameboard.getStoneFrom(receivedMove.to);
+					pushedStone.setPosition(receivedMove.push);
+				}
+				
+				Stone movedStone = this.gameboard.getStoneFrom(receivedMove.from);
+				movedStone.setPosition(receivedMove.to);
+				
+				this.gameboard.updateGameboard();
+				
+				System.out.println(this.gameboard.toString());
+				
+			}
+			
+			Evaluation bestMove = this.getBestMove();
+			Stone target = gameboard.getStoneFrom(bestMove.targetPosition);
+			
+			int push = 255;
+			if(target != null) {
+				Integer[] emptyNeighbours = target.getAllEmptyNeighbour(gameboard);
+				// Need minimax here
+				push = emptyNeighbours[(new Random()).nextInt(emptyNeighbours.length)];
+			}
+			
+			this.client.sendMove(new Move(bestMove.stone.getPosition(), bestMove.targetPosition, push));
+		}
+	}
+	
+	public Evaluation getBestMove() {
 		
 		long time = System.currentTimeMillis();
-		final int playerNumber = this.clientNumber;
+		final int playerNumber = this.client.getMyPlayerNumber();
 		final Stone[] stones = this.gameboard.getStones(playerNumber);
 		
 		ArrayList<FutureTask<Evaluation>> tasks = new ArrayList<FutureTask<Evaluation>>();
 	
 		for(Stone stone : stones) {
+			if(stone.getPosition() == -1) continue;
 			Integer[] moves = stone.getValidMoves(gameboard);
 			for(Integer move : moves) {
-//				int oldPosition = stone.getPosition();
 				GameBoard gameBoardClone = this.gameboard.clone();
-				
-//				stone.setPosition(move);
-//				Integer evaluationValue = moveCalculator.calculate(gameboard, 11);
-//				stone.setPosition(oldPosition);
 				
 				Callable<Evaluation> calculator = new Callable<Evaluation>() {
 
 					@Override
 					public Evaluation call() throws Exception {
-						// TODO Auto-generated method stub
 						Stone clonedStone = gameBoardClone.getStoneFrom(stone.getPosition());
 						
 						clonedStone.setPosition(move);
-						Integer evaluationValue = moveCalculator.calculate(gameBoardClone, 11);
+						Integer evaluationValue = moveCalculator.calculate(gameBoardClone, 9);
+						
+						
 						
 						Evaluation evaluation = new Evaluation(stone, move, evaluationValue);
 						return evaluation;
@@ -87,18 +124,26 @@ public class Client extends Thread {
 			}
 		}
 		
-		
+		Evaluation bestMove = new Evaluation(null, null, Integer.MIN_VALUE);
 		for(FutureTask<Evaluation> task : tasks) {
 			try {
 				Evaluation evaluation = task.get();
-				System.out.println(evaluation.toString());
+				Stone targetStone;
+				if((targetStone = this.gameboard.getStoneFrom(evaluation.targetPosition)) != null) {
+					// if(!this.gameboard.getActivePlayers().contains(targetStone.getPlayerNumber())) continue;
+					Integer[] emptyNeighbours = targetStone.getAllEmptyNeighbour(this.gameboard);
+					if(emptyNeighbours.length == 0) continue;
+				}
+				if(bestMove.evaluation == evaluation.evaluation) bestMove = (new Random()).nextInt(2) == 0 ? bestMove : evaluation;
+				if(bestMove.evaluation < evaluation.evaluation) bestMove = evaluation;
+				
 			} catch (InterruptedException | ExecutionException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 		
 		System.out.println("Player " + playerNumber + " took " + (System.currentTimeMillis() - time) + " ms to finish processing valid moves");
+		return bestMove;
 	}
 
 	protected class Evaluation {

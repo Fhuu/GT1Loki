@@ -10,7 +10,7 @@ public class Loki {
         // Startbrettkonfiguration erstellen
 		
 		// Create three clients from different threads
-		Client[] clients = new Client[3];
+		Client[] clients = new Client[playerCount];
 		for(int index = 0; index < clients.length; index++) {
 			clients[index] = new Client("127.0.0.1", index);
 			clients[index].start();

@@ -24,6 +24,7 @@ public class GameBoard implements Cloneable {
 
 	private Integer[][] neighbours = new Integer[36][3];
 	private Stone[][] stones;
+	private ArrayList<Integer> activePlayers = new ArrayList<Integer>();
 
 	// TODO
 	public GameBoard() {
@@ -46,10 +47,18 @@ public class GameBoard implements Cloneable {
 		this.stones[2][1] = new Stone(2, 33);
 		this.stones[2][2] = new Stone(2, 34);
 		this.stones[2][3] = new Stone(2, 35);
-	}
+		
+		this.activePlayers.add(0);
+		this.activePlayers.add(1);
+		this.activePlayers.add(2);
+}
 
 	public Stone[][] getAllStones() {
 		return this.stones;
+	}
+	
+	public ArrayList<Integer> getActivePlayers() {
+		return this.activePlayers;
 	}
 
 	public Integer[] getAllStonePositionExcluding(int playerNumber) {
@@ -251,6 +260,37 @@ public class GameBoard implements Cloneable {
     }
 	
 	
+	public void updateGameboard() {
+	    for (Stone[] playerStones : this.stones) {
+	        for (Stone stone : playerStones) {
+	        	if (stone.getPosition() == -1) continue;
+	            Integer[] neighbouringPos = this.getNeighbouringPosition(stone.getPosition());
+	            
+	            boolean hasNeighbour = false;
+	            for(Integer position : neighbouringPos) {
+	            	if(this.getStoneFrom(position) != null)  {
+	            		hasNeighbour = true;
+	            		break;
+	            	}
+	            }
+	            
+	            if(!hasNeighbour) stone.setPosition(-1);
+	        }
+	    }
+	    
+	    ArrayList<Integer> currentActivePlayers = new ArrayList<Integer>();
+	    for(Integer playerIndex : activePlayers) {
+	    	int deadStoneCount = 0;
+	    	for(Stone playerStone : this.stones[playerIndex]) {
+	    		if(playerStone.getPosition() == -1) deadStoneCount++;
+	    	}
+	    	if(deadStoneCount < 2) currentActivePlayers.add(playerIndex);
+	    }
+	    
+	    this.activePlayers = currentActivePlayers;
+	}
+	
+	
 	@Override
 	public GameBoard clone() {
 		
@@ -271,5 +311,17 @@ public class GameBoard implements Cloneable {
 		clone.setStones(clonedStones);
 		
 		return clone;
+	}
+	
+	public String toString() {
+		String result = "";
+		for(Stone[] playerStones : this.stones) {
+			for(Stone stone : playerStones) {
+				result = result + stone.getPosition() + " -> ";
+			}
+			result = result + "\n";
+		}
+		
+		return result;
 	}
 }
