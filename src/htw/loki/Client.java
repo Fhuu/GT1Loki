@@ -19,9 +19,7 @@ public class Client extends Thread {
 	private String hostname;
 	private int clientNumber;
 	private GameBoard gameboard;
-	private Integer fromHelper;
-	private Integer toHelper;
-	private Move move;
+
 
 	/**
 	 * hostname, port, teamname, image path
@@ -32,64 +30,45 @@ public class Client extends Thread {
 		this.hostname = hostname;
 		this.clientNumber = clientNumber;
 		this.gameboard = new GameBoard();
-		this.move = new Move(0,0,0);
-		this.fromHelper = 0;
-		this.toHelper = 0;
 	}
 
-	// public void setActivePlayer(Integer player) {
-	// this.activePlayer = player;
-	// }
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
-		System.out.println("Client " + this.clientNumber + " connecting to " + this.hostname
-				+ " with image from .\\image\\image" + (this.clientNumber+1) + ".png");
-		try {
-			this.client = new NetworkClient(this.hostname, "player" + clientNumber,
-					ImageIO.read(new File(".\\image\\image" + (this.clientNumber +1 ) + ".png")));
+	    System.out.println("Client " + this.clientNumber + " connecting to " + this.hostname
+	            + " with image from .\\image\\image" + (this.clientNumber + 1) + ".png");
+	    try {
+	        this.client = new NetworkClient(this.hostname, "player" + clientNumber,
+	                ImageIO.read(new File(".\\image\\image" + (this.clientNumber + 1) + ".png")));
 
-			while (true) {
-				Move receivedMove = this.client.receiveMove();
-				while (receivedMove != null) {	    
-					Stone movedStone = this.gameboard.getStoneFrom(receivedMove.from);
-					Stone targetPos = this.gameboard.getStoneFrom(receivedMove.to);
-					
-					if(receivedMove != move) {
-						// update push if target is not empty
-						if (targetPos != null && this.fromHelper != receivedMove.from &&  this.toHelper != receivedMove.to ) {
-							System.out.println("push called");
-							targetPos.setPosition(receivedMove.push);
-						}
-						
-						if (movedStone != null && this.fromHelper != receivedMove.from && this.toHelper != receivedMove.to ) {
-							System.out.println("called");
-							movedStone.setPosition(receivedMove.to);
-						}
-						
-					}
-					break;
-	            	
-				}
-				this.move();
-			}
+	        boolean receivedMoveComplete = false;
+	        while (true) {
+	            Move receivedMove = this.client.receiveMove();
+	            while (receivedMove != null) {
+	                // update push if target is not empty
+	                if (this.gameboard.getStoneFrom(receivedMove.to) != null) {
+	                    System.out.println("push called");
+	                    this.gameboard.getStoneFrom(receivedMove.to).setPosition(receivedMove.push);
+	                }
 
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
+	                if (this.gameboard.getStoneFrom(receivedMove.from) != null) {
+	                    System.out.println("updating Local from " + this.gameboard.getStoneFrom(receivedMove.from).getPosition() + " to " + receivedMove.to);
+	                    this.gameboard.getStoneFrom(receivedMove.from).setPosition(receivedMove.to);
+	                }
 
-	public void setHelper(Integer from, Integer to) {
-		this.fromHelper = from;
-		this.toHelper = to;
-	}
-	
-	public void setMove(Integer from, Integer to, Integer push) {
-		this.move.from = from;
-		this.move.to = to;
-		this.move.push = push;
+	                receivedMove = this.client.receiveMove();
+	            }
+	            receivedMoveComplete = true;
+
+	            if (receivedMoveComplete) {
+	                this.move();
+	                receivedMoveComplete = false;
+	            }
+	        }
+
+	    } catch (IOException e) {
+	        e.printStackTrace();
+	    }
 	}
 	
 	public void move() {
@@ -97,9 +76,14 @@ public class Client extends Thread {
 		long time = System.currentTimeMillis();
 		final int playerNumber = this.client.getMyPlayerNumber();
 		Stone[] stones = this.gameboard.getStones(playerNumber);
+		ArrayList<Integer> testPos = new ArrayList<Integer>();
+		for (Stone stone : stones) {
+			testPos.add(stone.getPosition());
+		}
+		System.out.println("Player " + this.clientNumber +" stone pos: "+ testPos.toString());
+		
 		ArrayList<Integer> positions = new ArrayList<Integer>();
 		for (Stone stone : stones) {
-			System.out.println("stone pos: "+stone.getPosition());
 			Integer[] moves = stone.getValidMoves(this.gameboard);
 			if(moves.length == 0) continue;
 			positions.add(stone.getPosition());
@@ -109,6 +93,7 @@ public class Client extends Thread {
 			}
 
 		}
+		
 
 		Integer movedStonePosition = positions.get(new Random().nextInt(positions.size()));
 
@@ -120,20 +105,12 @@ public class Client extends Thread {
 				
 				if (targetPos == null) {
 					this.client.sendMove(new Move(stone.getPosition(), selectedMove, 255));
-					
-					this.setHelper(stone.getPosition(), selectedMove);
-					this.setMove(stone.getPosition(), selectedMove, 255);
-					stone.setPosition(selectedMove);
+					System.out.println("updating Server from " + stone.getPosition() + " to " + selectedMove);
 				} else {
 					Integer[] possiblePushes = targetPos.allEmptyNeighbour(this.gameboard);
+					System.out.println("possibleushes: " + new ArrayList<>(Arrays.asList(possiblePushes)).toString());
 					Integer selectedPush = possiblePushes[(new Random()).nextInt(possiblePushes.length)];
 					this.client.sendMove(new Move(stone.getPosition(), selectedMove, selectedPush));
-					this.setMove(stone.getPosition(), selectedMove, selectedPush);
-					this.setHelper(stone.getPosition(), selectedMove);
-					// to - push
-					targetPos.setPosition(selectedPush);
-					// from - to
-					stone.setPosition(selectedMove);
 				}
 
 				break;

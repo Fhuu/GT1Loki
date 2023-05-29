@@ -20,15 +20,19 @@ public class Stone {
 		
 		ArrayList<Integer> emptyNeighbours = new ArrayList<Integer>();
 		for(Integer neighbour : neighbours) {
-			if(gameboard.getStoneFrom(neighbour) != null) emptyNeighbours.add(neighbour);
+			if(gameboard.getStoneFrom(neighbour) == null) emptyNeighbours.add(neighbour);
 		}
 		
 		return emptyNeighbours.toArray(new Integer[emptyNeighbours.size()]);
 	}
+	
+	public Integer getPlayerNumber() {
+		return this.playerNumber;
+	}
 
 
 	public Integer getPosition() {
-		return position;
+		return this.position;
 	}
 
 	public void setPosition(Integer position) {
