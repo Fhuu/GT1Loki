@@ -268,7 +268,8 @@ public class GameBoard implements Cloneable {
 	            
 	            boolean hasNeighbour = false;
 	            for(Integer position : neighbouringPos) {
-	            	if(this.getStoneFrom(position) != null)  {
+	            	Stone neighbouringStone;
+	            	if((neighbouringStone = this.getStoneFrom(position)) != null && neighbouringStone.getPlayerNumber() == stone.getPlayerNumber())  {
 	            		hasNeighbour = true;
 	            		break;
 	            	}
@@ -313,15 +314,18 @@ public class GameBoard implements Cloneable {
 		return clone;
 	}
 	
-	public String toString() {
-		String result = "";
-		for(Stone[] playerStones : this.stones) {
-			for(Stone stone : playerStones) {
-				result = result + stone.getPosition() + " -> ";
+	public String createStringIndex() {
+		String[] result = new String[this.stones.length];
+		for(int playerIndex = 0; playerIndex < this.activePlayers.size(); playerIndex++) {
+			Stone[] playerStones = this.stones[playerIndex];
+			String[] stonePositions =  new String[playerStones.length];
+			
+			for(int index = 0; index < stonePositions.length; index++) {
+				stonePositions[index] = "" + playerStones[index].getPosition();
 			}
-			result = result + "\n";
+			result[playerIndex] = this.activePlayers.get(playerIndex) + ":" + String.join(",", stonePositions);
 		}
 		
-		return result;
+		return String.join("-", result);
 	}
 }

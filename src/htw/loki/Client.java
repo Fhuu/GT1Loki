@@ -3,6 +3,7 @@ package htw.loki;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -21,7 +22,7 @@ public class Client extends Thread {
 	private GameBoard gameboard;
 	private MoveCalculator moveCalculator;
 	final String[] names = new String[] {"alpha", "beta", "pruning"};
-
+	private ArrayList<HashMap<String, HashMap<String, Double>>> qTables;
 
 	/**
 	 * hostname, port, teamname, image path
@@ -32,23 +33,61 @@ public class Client extends Thread {
 		this.hostname = hostname;
 		this.clientNumber = clientNumber;
 		this.gameboard = new GameBoard();
-		
+		this.qTables = new ArrayList<HashMap<String, HashMap<String, Double>>>();
 	}
 
 
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
+		ArrayList<FutureTask<HashMap<String, HashMap<String, Double>>>> tasks = new ArrayList<FutureTask<HashMap<String, HashMap<String, Double>>>>();
+		
+		for(int connectionNumber = 0; connectionNumber < 3; connectionNumber++) {
+			final int number = connectionNumber;
+			
+			Callable<HashMap<String, HashMap<String, Double>>> callable = new Callable<HashMap<String, HashMap<String, Double>>>() {
+
+				@Override
+				public HashMap<String, HashMap<String, Double>> call() throws Exception {
+					HashMap<String, HashMap<String, Double>> qTable = new HashMap<String, HashMap<String, Double>>();
+					for(int index = 0; index <= 20; index++) {
+						QLearning qlearning = new QLearning(qTable, number);
+						qTable = qlearning.learn();
+						System.out.println("Player" + number + " iteration done: " + index);
+					}
+					return qTable;
+				}
+			};
+			FutureTask<HashMap<String, HashMap<String, Double>>> task = new FutureTask<HashMap<String, HashMap<String, Double>>>(callable);
+			tasks.add(task);
+			(new Thread(task)).start();
+		}
+		
+		
+		// Here synchronous main thread of client
+		for(int taskIndex = 0; taskIndex < 3; taskIndex++) {
+			try {
+				this.qTables.add(tasks.get(taskIndex).get());
+			} catch (InterruptedException | ExecutionException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+//		connectAndPlay();
+	}
+	
+	public void connectAndPlay() {
 		System.out.println("Client " + this.clientNumber + " connecting to " + this.hostname + " with image from .\\image\\image" + (this.clientNumber + 1) + ".png");
 		try {
 			this.client = new NetworkClient(this.hostname, names[clientNumber], ImageIO.read(new File(".\\image\\image" + (this.clientNumber + 1) + ".png")));
-			this.moveCalculator = new MoveCalculator(AIAlgorithm.MINIMAX, this.client.getMyPlayerNumber());
+			this.moveCalculator = new MoveCalculator(this.client.getMyPlayerNumber());
 			this.move();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		this.moveCalculator = new MoveCalculator(AIAlgorithm.MINIMAX, this.client.getMyPlayerNumber());
+		this.moveCalculator = new MoveCalculator(this.client.getMyPlayerNumber());
 		
 	}
 	
@@ -90,6 +129,11 @@ public class Client extends Thread {
 		final int playerNumber = this.client.getMyPlayerNumber();
 		final Stone[] stones = this.gameboard.getStones(playerNumber);
 		
+		
+		HashMap<String, Double> actions = this.qTables.get(playerNumber).get(this.gameboard.createStringIndex());
+		// Iterate through actions and get move with the best q value, if not found, minimax
+		
+		
 		ArrayList<FutureTask<Evaluation>> tasks = new ArrayList<FutureTask<Evaluation>>();
 	
 		for(Stone stone : stones) {
@@ -105,7 +149,7 @@ public class Client extends Thread {
 						Stone clonedStone = gameBoardClone.getStoneFrom(stone.getPosition());
 						
 						clonedStone.setPosition(move);
-						Integer evaluationValue = moveCalculator.calculate(gameBoardClone, 9);
+						Integer evaluationValue = moveCalculator.minimax(gameBoardClone, playerNumber, 9, Integer.MIN_VALUE, Integer.MAX_VALUE);
 						
 						
 						
@@ -144,21 +188,5 @@ public class Client extends Thread {
 		
 		System.out.println("Player " + playerNumber + " took " + (System.currentTimeMillis() - time) + " ms to finish processing valid moves");
 		return bestMove;
-	}
-
-	protected class Evaluation {
-		protected Evaluation(Stone stone, Integer targetPosition, Integer evaluation) {
-			this.stone = stone;
-			this.targetPosition = targetPosition;
-			this.evaluation = evaluation;
-		}
-		
-		protected Stone stone;
-		protected Integer targetPosition;
-		protected Integer evaluation;
-		
-		public String toString() {
-			return this.stone.getPosition() + ", " + this.targetPosition + ", " + this.evaluation;
-		}
 	}
 }

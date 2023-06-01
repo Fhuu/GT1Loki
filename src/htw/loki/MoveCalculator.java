@@ -5,15 +5,8 @@ public class MoveCalculator {
 	private AIAlgorithm algorithm;
 	private int playerNumber;
 	
-	public MoveCalculator(AIAlgorithm algorithm, int playerNumber) {
-		this.algorithm = algorithm;
+	public MoveCalculator(int playerNumber) {
 		this.playerNumber = playerNumber;
-	}
-	
-	
-	public int calculate(final GameBoard gameboard, int depth) {
-		if(this.algorithm.equals(AIAlgorithm.MINIMAX)) return minimax(gameboard, this.playerNumber, depth, Integer.MIN_VALUE, Integer.MAX_VALUE);
-		return -1;
 	}
 	
 	
@@ -28,14 +21,20 @@ public class MoveCalculator {
 		}
 
 		if(depth == 0) {
+			for(Stone playerStone : gameboard.getStones(playerNumber)) {
+				if(playerStone.getPosition() == -1) continue;
+				for(Integer position : playerStone.getValidMoves(gameboard)) {
+					if(gameboard.getStoneFrom(position) != null && playerNumber != this.playerNumber) return -1;
+				}
+			}
 			return 0;
 		}
 		
 		int result = playerNumber == this.playerNumber ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 		for(Stone playerStone : gameboard.getStones(playerNumber)) {
+			if(playerStone.getPosition() == -1) continue;
 			for(Integer position : playerStone.getValidMoves(gameboard)) {
 				if(gameboard.getStoneFrom(position) != null && playerNumber == this.playerNumber) return 1;
-				if(gameboard.getStoneFrom(position) != null && playerNumber != this.playerNumber) return -1;
 				
 				int stoneOldPos = playerStone.getPosition();
 				playerStone.setPosition(position);
@@ -66,6 +65,7 @@ public class MoveCalculator {
 		return result;
 		
 	}
+	
 	
 	public boolean hasGameStopped(final GameBoard gameboard) {
 		Stone[] stones = gameboard.getStones(this.playerNumber);

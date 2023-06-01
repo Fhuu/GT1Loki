@@ -57,8 +57,8 @@ public class Stone implements Cloneable {
 
 		final ArrayList<Integer> allPossibleMoves = new ArrayList<>();
 		for (int position : positionList) {
-			if (position == this.position) continue;
-			
+			if(position == this.position) continue;
+			if(position == -1) continue;
 			Integer[] possibleMoves = gameboard.getNeighbouringPosition(position);
 			for (int possibleMove : possibleMoves) if (possibleMove > -1 && !allPossibleMoves.contains(possibleMove) && !positionList.contains(possibleMove)) allPossibleMoves.add(possibleMove);
 		}
@@ -73,11 +73,13 @@ public class Stone implements Cloneable {
 	public boolean isValidMove(Integer targetPosition, GameBoard gameboard, Stone[] stones) {
 		ArrayList<Integer> positions = new ArrayList<Integer>();
 		for (Stone stone : stones) {
-			if (this == stone) continue;
+			if(this == stone) continue;
+			if(this.getPosition() == -1) continue;
 			positions.add(stone.position);
 		}
 
 		for (Integer position : positions) {
+			if(position == -1) continue;
 			final ArrayList<Integer> neighbouringPositions = new ArrayList<Integer>(Arrays.asList(gameboard.getNeighbouringPosition(position)));
 			boolean isValid = false;			
 			
