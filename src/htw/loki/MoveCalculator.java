@@ -15,18 +15,20 @@ public class MoveCalculator {
 		final int nextPlayer = playerNumber >= 2 ? 0 : playerNumber + 1;
 		if(!gameboard.getActivePlayers().contains(playerNumber)) return minimax(gameboard, playerNumber >= 2 ? 0 : playerNumber + 1, depth, alpha, beta);
 		
+		for(Stone playerStone : gameboard.getStones(playerNumber)) {
+			if(playerStone.getPosition() == -1) continue;
+			for(Integer position : playerStone.getValidMoves(gameboard)) {
+				if(gameboard.getStoneFrom(position) != null && playerNumber != this.playerNumber) return -1 - depth;
+			}
+		}
+		
 		if(this.hasGameStopped(gameboard)) {
-			if(gameboard.hasPlayerWon(this.playerNumber)) return 2;
+			if(gameboard.hasPlayerWon(this.playerNumber)) return 2 + depth;
 			return -2;
 		}
 
 		if(depth == 0) {
-			for(Stone playerStone : gameboard.getStones(playerNumber)) {
-				if(playerStone.getPosition() == -1) continue;
-				for(Integer position : playerStone.getValidMoves(gameboard)) {
-					if(gameboard.getStoneFrom(position) != null && playerNumber != this.playerNumber) return -1;
-				}
-			}
+			
 			return 0;
 		}
 		
@@ -34,7 +36,7 @@ public class MoveCalculator {
 		for(Stone playerStone : gameboard.getStones(playerNumber)) {
 			if(playerStone.getPosition() == -1) continue;
 			for(Integer position : playerStone.getValidMoves(gameboard)) {
-				if(gameboard.getStoneFrom(position) != null && playerNumber == this.playerNumber) return 1;
+				if(gameboard.getStoneFrom(position) != null && playerNumber == this.playerNumber) return 1 + depth;
 				
 				int stoneOldPos = playerStone.getPosition();
 				playerStone.setPosition(position);

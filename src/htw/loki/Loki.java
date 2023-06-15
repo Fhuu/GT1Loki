@@ -2,7 +2,7 @@ package htw.loki;
 
 public class Loki {
 	//private static GameBoard gameBoard = GameBoard.getInstance();
-	public static int playerCount = 1;
+	public static int playerCount = 3;
 	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub

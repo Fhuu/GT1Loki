@@ -254,9 +254,10 @@ public class GameBoard implements Cloneable {
         
         ArrayList<Integer> winningPosition = new ArrayList<Integer>(Arrays.asList(playerNumber == 0 ? new Integer[] {25,26,27,28,29,30,31,32,33,34,35} : playerNumber == 1 ? new Integer[] {0,2,3,7,8,14,15,23,24,34,35} : new Integer[] {0,2,1,5,4,10,9,17,16,26,25}));
         
-        for(Stone stone : stones) if(!winningPosition.contains(stone.getPosition())) return false;
+        int stoneCount = 0;
+        for(Stone stone : stones) if(winningPosition.contains(stone.getPosition())) stoneCount++;
         
-        return true;
+        return stoneCount == 3;
     }
 	
 	

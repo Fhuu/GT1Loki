@@ -40,47 +40,47 @@ public class Client extends Thread {
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		ArrayList<FutureTask<HashMap<String, HashMap<String, Double>>>> tasks = new ArrayList<FutureTask<HashMap<String, HashMap<String, Double>>>>();
+//		ArrayList<FutureTask<HashMap<String, HashMap<String, Double>>>> tasks = new ArrayList<FutureTask<HashMap<String, HashMap<String, Double>>>>();
+//		
+//		for(int connectionNumber = 0; connectionNumber < 3; connectionNumber++) {
+//			final int number = connectionNumber;
+//			
+//			Callable<HashMap<String, HashMap<String, Double>>> callable = new Callable<HashMap<String, HashMap<String, Double>>>() {
+//
+//				@Override
+//				public HashMap<String, HashMap<String, Double>> call() throws Exception {
+//					HashMap<String, HashMap<String, Double>> qTable = new HashMap<String, HashMap<String, Double>>();
+//					for(int index = 0; index <= 20; index++) {
+//						QLearning qlearning = new QLearning(qTable, number);
+//						qTable = qlearning.learn();
+//						System.out.println("Player" + number + " iteration done: " + index);
+//					}
+//					return qTable;
+//				}
+//			};
+//			FutureTask<HashMap<String, HashMap<String, Double>>> task = new FutureTask<HashMap<String, HashMap<String, Double>>>(callable);
+//			tasks.add(task);
+//			(new Thread(task)).start();
+//		}
+//		
+//		
+//		// Here synchronous main thread of client
+//		for(int taskIndex = 0; taskIndex < 3; taskIndex++) {
+//			try {
+//				this.qTables.add(tasks.get(taskIndex).get());
+//			} catch (InterruptedException | ExecutionException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
 		
-		for(int connectionNumber = 0; connectionNumber < 3; connectionNumber++) {
-			final int number = connectionNumber;
-			
-			Callable<HashMap<String, HashMap<String, Double>>> callable = new Callable<HashMap<String, HashMap<String, Double>>>() {
-
-				@Override
-				public HashMap<String, HashMap<String, Double>> call() throws Exception {
-					HashMap<String, HashMap<String, Double>> qTable = new HashMap<String, HashMap<String, Double>>();
-					for(int index = 0; index <= 20; index++) {
-						QLearning qlearning = new QLearning(qTable, number);
-						qTable = qlearning.learn();
-						System.out.println("Player" + number + " iteration done: " + index);
-					}
-					return qTable;
-				}
-			};
-			FutureTask<HashMap<String, HashMap<String, Double>>> task = new FutureTask<HashMap<String, HashMap<String, Double>>>(callable);
-			tasks.add(task);
-			(new Thread(task)).start();
-		}
-		
-		
-		// Here synchronous main thread of client
-		for(int taskIndex = 0; taskIndex < 3; taskIndex++) {
-			try {
-				this.qTables.add(tasks.get(taskIndex).get());
-			} catch (InterruptedException | ExecutionException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-		
-//		connectAndPlay();
+		connectAndPlay();
 	}
 	
 	public void connectAndPlay() {
 		System.out.println("Client " + this.clientNumber + " connecting to " + this.hostname + " with image from .\\image\\image" + (this.clientNumber + 1) + ".png");
 		try {
-			this.client = new NetworkClient(this.hostname, names[clientNumber], ImageIO.read(new File(".\\image\\image" + (this.clientNumber + 1) + ".png")));
+			this.client = new NetworkClient(this.hostname, "Y", ImageIO.read(new File(".\\image\\image" + (this.clientNumber + 1) + ".png")));
 			this.moveCalculator = new MoveCalculator(this.client.getMyPlayerNumber());
 			this.move();
 		} catch (IOException e) {
@@ -130,7 +130,7 @@ public class Client extends Thread {
 		final Stone[] stones = this.gameboard.getStones(playerNumber);
 		
 		
-		HashMap<String, Double> actions = this.qTables.get(playerNumber).get(this.gameboard.createStringIndex());
+//		HashMap<String, Double> actions = this.qTables.get(playerNumber).get(this.gameboard.createStringIndex());
 		// Iterate through actions and get move with the best q value, if not found, minimax
 		
 		
@@ -149,7 +149,7 @@ public class Client extends Thread {
 						Stone clonedStone = gameBoardClone.getStoneFrom(stone.getPosition());
 						
 						clonedStone.setPosition(move);
-						Integer evaluationValue = moveCalculator.minimax(gameBoardClone, playerNumber, 9, Integer.MIN_VALUE, Integer.MAX_VALUE);
+						Integer evaluationValue = moveCalculator.minimax(gameBoardClone, playerNumber,8, Integer.MIN_VALUE, Integer.MAX_VALUE);
 						
 						
 						
